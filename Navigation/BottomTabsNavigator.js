@@ -5,7 +5,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import BottomTabAlaUne from '../Components/BottomTabAlaUne';
+import TopTabNavigator from '../Navigation/TopTabNavigator';
 import BottomTabVosSelection from '../Components/BottomTabVosSelection';
 import BottomTabMenu from '../Components/BottomTabMenu';
 
@@ -59,7 +59,7 @@ const BottomTabsNavigator = () => {
       }}>
       <Tab.Screen
         name="A la Une"
-        component={BottomTabAlaUne}
+        component={TopTabNavigator}
         options={{
           tabBarLabel: 'A la Une',
           tabBarIcon: ({color, size}) => (
@@ -81,7 +81,7 @@ const BottomTabsNavigator = () => {
         name="Menu"
         component={BottomTabMenu}
         options={{
-          tabBarLabel: 'A la Une',
+          tabBarLabel: 'Menu',
           tabBarIcon: ({color, size}) => (
             <Ionicons name="menu-outline" color={color} size={size} />
           ),
