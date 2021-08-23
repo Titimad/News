@@ -15,22 +15,31 @@ const TopTabNavigator = () => {
       screenOptions={{
         tabBarShowIcon: false,
         tabBarScrollEnabled: false,
-        tabBarIndicatorStyle: {backgroundColor: 'dodgerblue', height: 4},
+        tabBarIndicatorStyle: {
+          backgroundColor: 'dodgerblue',
+          height: 3,
+          marginBottom: 6,
+        },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: 'bold',
           fontFamily: 'Helvetica',
           color: 'white',
-          marginTop: 0,
+          height: 40,
+          textTransform: 'none',
         },
 
         tabBarItemStyle: {
           width: 'auto',
-          height: 'auto',
+          height: 30,
+        },
+        tabBarIconStyle: {
+          height: 0,
+          marginTop: 0,
         },
         tabBarStyle: {
           backgroundColor: 'black',
-          height: 'auto',
+          height: 30,
         },
         swipeEnabled: true,
       }}>

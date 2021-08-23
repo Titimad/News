@@ -5,7 +5,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import TopTabNavigator from '../Navigation/TopTabNavigator';
+import MainStackNavigator from '../Navigation/StackNavigator';
 import BottomTabVosSelection from '../Components/BottomTabVosSelection';
 import BottomTabMenu from '../Components/BottomTabMenu';
 
@@ -39,6 +39,7 @@ const BottomTabsNavigator = () => {
     <Tab.Navigator
       initialRouteName="A la Une"
       screenOptions={{
+        headerShown: false,
         tabBarShowIcon: true,
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'grey',
@@ -59,7 +60,7 @@ const BottomTabsNavigator = () => {
       }}>
       <Tab.Screen
         name="A la Une"
-        component={TopTabNavigator}
+        component={MainStackNavigator}
         options={{
           tabBarLabel: 'A la Une',
           tabBarIcon: ({color, size}) => (
