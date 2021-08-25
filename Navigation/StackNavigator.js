@@ -35,7 +35,7 @@ const MainStackNavigator = () => {
               <Text
                 style={{
                   color: 'white',
-                  fontSize: 28,
+                  fontSize: 30,
                   fontWeight: 'bold',
                   fontFamily: 'Lucida Blackletter',
                 }}>
