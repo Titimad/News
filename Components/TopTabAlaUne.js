@@ -1,5 +1,5 @@
 //TopTabAlaUne.js
-import React, {useState} from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -7,54 +7,72 @@ import {
   Text,
   View,
   FlatList,
+  Image,
 } from 'react-native';
 
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {getMediaFromApiWithSearchedText} from '../API/MediaStackApi';
+//import DATA from '../Helpers/Data';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
-
-const Item = ({title}) => (
+const Item = ({title, image, category}) => (
   <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
+    <View style={{flexDirection: 'row'}}>
+      <View style={{flex: 2, justifyContent: 'space-between'}}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+      <View style={{flex: 1}}>
+        <Image style={styles.image} source={{uri: image}} />
+      </View>
+    </View>
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10,
+      }}>
+      <Text style={styles.category}>{category}</Text>
+      <Ionicons name="bookmark-outline" color="lightgrey" size={24} />
+    </View>
   </View>
 );
-const renderItem = ({item}) => <Item title={item.title} />;
+const renderItem = ({item}) => (
+  <Item title={item.title} image={item.image} category={item.category} />
+);
 
 class TopTabAlaUne extends React.Component {
   constructor(props) {
     super(props);
-    this.data = [];
     this.state = {medias: []};
+    this._loadMedias();
+  }
+
+  FlatListItemSeparator() {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: '100%',
+          backgroundColor: 'lightgrey',
+        }}
+      />
+    );
   }
   _loadMedias() {
     console.log('Execution de _loadMedias');
     getMediaFromApiWithSearchedText().then(data => {
       this.setState({medias: data.data});
     });
-    console.log('Props:' + this.data);
     console.log('Fin de _loadMedias');
   }
+  //  static getDerivedStateFromProps() {}
   render() {
-    this._loadMedias();
     return (
       <SafeAreaView style={styles.container}>
         <FlatList
           data={this.state.medias}
           renderItem={renderItem}
           keyExtractor={item => item.title}
+          ItemSeparatorComponent={this.FlatListItemSeparator}
         />
       </SafeAreaView>
     );
@@ -67,13 +85,29 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   item: {
-    backgroundColor: 'lightgrey',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    padding: 10,
+    marginTop: 10,
+    marginVertical: 0,
+    marginHorizontal: 0,
   },
   title: {
-    fontSize: 32,
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'Helvetica',
+  },
+  category: {
+    color: 'lightgrey',
+    fontSize: 12,
+    fontFamily: 'Helvetica',
+  },
+  image: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: 110,
+    height: 69,
+    margin: 5,
   },
 });
 export default TopTabAlaUne;
