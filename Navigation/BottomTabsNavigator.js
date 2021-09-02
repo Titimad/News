@@ -59,20 +59,20 @@ const BottomTabsNavigator = () => {
         swipeEnabled: false,
       }}>
       <Tab.Screen
-        name="A la Une"
+        name="General"
         component={MainStackNavigator}
         options={{
-          tabBarLabel: 'A la Une',
+          tabBarLabel: 'General',
           tabBarIcon: ({color, size}) => (
             <InitialIcon letter="N" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name="Vos sélections"
+        name="Your selections"
         component={BottomTabVosSelection}
         options={{
-          tabBarLabel: 'A la Une',
+          tabBarLabel: 'Your selections',
           tabBarIcon: ({color, size}) => (
             <Ionicons name="md-bookmarks-outline" color={color} size={size} />
           ),
