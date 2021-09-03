@@ -17,10 +17,10 @@ class MediaItem extends React.Component {
     var uriImage = (uriImage = {
       uri: 'http://www.nytimes.com/images/2021/09/01/nyregion/01kelly/merlin_193409475_bad6f472-64e2-40e6-99ed-83fe0c01703a-articleLarge.jpg',
     });
-    console.log(media.multimedia[0]);
+    //console.log(media.multimedia[0]);
     if (media.multimedia[0] == undefined) {
       {
-        console.log("Pas d'image");
+        //    console.log("Pas d'image");
         uriImage = {
           uri: 'http://www.nytimes.com/images/2021/09/01/nyregion/01kelly/merlin_193409475_bad6f472-64e2-40e6-99ed-83fe0c01703a-articleLarge.jpg',
         };
@@ -28,7 +28,7 @@ class MediaItem extends React.Component {
       }
     } else {
       {
-        console.log('Image présente');
+        //console.log('Image présente');
         uriImage = {
           //uri: 'http://www.nytimes.com/images/2021/09/01/nyregion/01kelly/merlin_193409475_bad6f472-64e2-40e6-99ed-83fe0c01703a-articleLarge.jpg',
           uri: 'http://www.nytimes.com/' + media.multimedia[0].url,

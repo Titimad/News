@@ -9,8 +9,6 @@ import {
   FlatList,
   Image,
   Dimensions,
-  ImageBackground,
-  TouchableOpacity,
   Alert,
 } from 'react-native';
 
@@ -23,14 +21,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {getMediaFromApiWithSearchedText} from '../API/MediaStackApi';
 import MediaItem from '../Components/MediaItem';
+import FirstMediaItem from '../Components/FirstMediaItem';
 import MediaDetail from '../Components/MediaDetail';
-import DATA from '../Helpers/Data';
-//this.state.data
 
 class TopTabAlaUne extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       medias: [],
       modalVisible: false,
@@ -40,29 +36,8 @@ class TopTabAlaUne extends React.Component {
       },
     };
     this._loadMedias();
-    console.log(this.state.media);
-    console.log(this.state.medias);
-  }
-  _flatListFirstItem(image) {
-    return (
-      <View>
-        <ImageBackground
-          style={styles.imageAlaUne}
-          source={{uri: DATA.data[0].image}}>
-          <LinearGradient
-            colors={['transparent', 'black']}
-            start={{x: 0.0, y: 0.52}}
-            end={{x: 0.0, y: 1.0}}
-            locations={[0, 0.5]}
-            style={styles.box}>
-            <Text style={styles.titleAlaUne}>{DATA.data[0].title}</Text>
-            <View style={{alignItems: 'flex-end'}}>
-              <Ionicons name="bookmark-outline" color="lightgrey" size={24} />
-            </View>
-          </LinearGradient>
-        </ImageBackground>
-      </View>
-    );
+    //console.log(this.state.media);
+    //  console.log(this.state.medias);
   }
   _flatListItemSeparator() {
     return (
@@ -75,7 +50,6 @@ class TopTabAlaUne extends React.Component {
       />
     );
   }
-
   _loadMedias() {
     console.log('Execution de _loadMedias');
     const election = 'election';
@@ -83,7 +57,7 @@ class TopTabAlaUne extends React.Component {
       this.setState({medias: data.response.docs});
     });
     //  console.log('state: ' + this.state.medias.response.docs[0].abstract);
-    console.log('Fin de _loadMedias');
+    //    console.log('Fin de _loadMedias');
   }
   _displayMediaDetail = media => {
     console.log('Affichage du média: ' + media.title);
@@ -93,7 +67,6 @@ class TopTabAlaUne extends React.Component {
     //Action à faire si ajout à "Vos sélections"
     console.log('_toggleFavorite()');
   }
-  //  static getDerivedStateFromProps() {}
   render() {
     console.log('Props de TopTabAlaUne: ' + this.props);
     return (
@@ -122,7 +95,6 @@ class TopTabAlaUne extends React.Component {
               <View style={styles.limitTabBarMenu} />
               <View style={styles.tabBarMenu}>
                 <Text style={styles.crossTabBarMenu}>X</Text>
-
                 <Octicons
                   name="settings"
                   color="black"
@@ -170,8 +142,8 @@ class TopTabAlaUne extends React.Component {
               displayMediaDetail={this._displayMediaDetail}
             />
           )}
-          keyExtractor={item => item.abstract}
-          ListHeaderComponent={this._flatListFirstItem}
+          keyExtractor={item => item._id}
+          ListHeaderComponent={({item}) => <FirstMediaItem media={item} />}
           ItemSeparatorComponent={this._flatListItemSeparator}
         />
       </SafeAreaView>
@@ -189,12 +161,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
   },
-  titleAlaUne: {
-    color: 'white',
-    fontSize: 26,
-    fontWeight: 'bold',
-    fontFamily: 'AmericanTypewriter-Bold',
-  },
   category: {
     color: 'lightgrey',
     fontSize: 12,
@@ -204,21 +170,9 @@ const styles = StyleSheet.create({
     width: 110,
     height: 69,
   },
-  imageAlaUne: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').width,
-    margin: 0,
-  },
   imageMediaDetail: {
     width: Dimensions.get('window').width,
     height: (Dimensions.get('window').width * 69) / 110,
-  },
-  box: {
-    paddingBottom: 10,
-    paddingRight: 10,
-    justifyContent: 'flex-end',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').width,
   },
   animation_view: {
     backgroundColor: 'red',
@@ -352,3 +306,4 @@ export default TopTabAlaUne;
 <Text>Réactions</Text>
 <WebView source={{uri: 'https://reactnative.dev/'}} />;
 */
+//this._flatListFirstItem
