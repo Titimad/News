@@ -1,54 +1,119 @@
 //MediaDetail.js
 import React from 'react';
 import {
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   View,
-  Image,
   Dimensions,
-  SafeAreaView,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 
-const MediaDetail = media => {
-  console.log('media = ' + media);
+import {WebView} from 'react-native-webview';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
 
-  //  console.log(this.props.media.title);
-  return (
-    //  <Text>{this.props.route.params.media.title}</Text>
-    //  <Text>{this.props.route.params.media.description}</Text>
-    //  <Text>{this.props.route.params.media.source}</Text>
-
-    <SafeAreaView style={styles.modalView}>
-      <Image />
-      <Text>{media.title}</Text>
-      <Text>Contenu</Text>
-      <Text>Dans la même rubrique</Text>
-      <Text>Réactions</Text>
-    </SafeAreaView>
-  );
-};
+class MediaDetail extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+    };
+  }
+  _displayLoading() {
+    if (this.state.isLoading) {
+      return (
+        <View style={styles.loading_container}>
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    }
+  }
+  render() {
+    const web_url = this.props.web_url;
+    return (
+      <SafeAreaView style={{backgroundColor: 'white'}}>
+        <WebView
+          style={{marginTop: 0}}
+          onLoad={() => this.setState({isLoading: false})}
+          originWhitelist={['*']}
+          source={{
+            uri: web_url,
+          }}
+        />
+        <View style={styles.limitTabBarMenu} />
+        <View style={styles.tabBarMenu}>
+          <Text style={styles.crossTabBarMenu}>X</Text>
+          <Octicons
+            name="settings"
+            color="black"
+            size={24}
+            onPress={() => this._toggleFavorite()}
+          />
+          <Ionicons
+            name="bookmark-outline"
+            color="black"
+            size={24}
+            onPress={() => this._toggleFavorite()}
+          />
+          <Ionicons
+            name="share-outline"
+            color="black"
+            size={24}
+            onPress={() => this._toggleFavorite()}
+          />
+          <View
+            style={{
+              marginLeft: 10,
+              backgroundColor: 'goldenrod',
+              padding: 8,
+              borderRadius: 6,
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                fontSize: 12,
+                fontWeight: 'bold',
+                fontFamily: 'Helvetica',
+              }}>
+              Subscribe
+            </Text>
+          </View>
+        </View>
+        {this._displayLoading()}
+      </SafeAreaView>
+    );
+  }
+}
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-  },
-  modalView: {
-    margin: 0,
-    backgroundColor: 'green',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+  limitTabBarMenu: {
+    height: 1,
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    backgroundColor: 'lightgrey',
+  },
+  tabBarMenu: {
+    width: Dimensions.get('window').width,
+    padding: 10,
+
+    justifyContent: 'space-around',
+    backgroundColor: 'white',
+    flexDirection: 'row',
+  },
+  crossTabBarMenu: {
+    color: 'black',
+    fontSize: 20,
+    fontFamily: 'Arial',
+  },
+  loading_container: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 export default MediaDetail;

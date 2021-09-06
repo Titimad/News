@@ -10,31 +10,30 @@ import {
 } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-var opacity = 1;
 class MediaItem extends React.Component {
-  render() {
-    const {media, displayMediaDetail} = this.props;
-    var uriImage = (uriImage = {
-      uri: 'http://www.nytimes.com/images/2021/09/01/nyregion/01kelly/merlin_193409475_bad6f472-64e2-40e6-99ed-83fe0c01703a-articleLarge.jpg',
-    });
-    //console.log(media.multimedia[0]);
-    if (media.multimedia[0] == undefined) {
+  _image() {
+    if (this.props.media.multimedia[0] != undefined) {
       {
-        //    console.log("Pas d'image");
-        uriImage = {
-          uri: 'http://www.nytimes.com/images/2021/09/01/nyregion/01kelly/merlin_193409475_bad6f472-64e2-40e6-99ed-83fe0c01703a-articleLarge.jpg',
-        };
-        opacity = 0;
+        //    console.log("Image présente");
+        return (
+          <Image
+            style={styles.image}
+            source={{
+              uri:
+                'http://www.nytimes.com/' + this.props.media.multimedia[0].url,
+            }}
+            onError={({nativeEvent: {error}}) => console.log('error')}
+          />
+        );
       }
     } else {
       {
-        //console.log('Image présente');
-        uriImage = {
-          //uri: 'http://www.nytimes.com/images/2021/09/01/nyregion/01kelly/merlin_193409475_bad6f472-64e2-40e6-99ed-83fe0c01703a-articleLarge.jpg',
-          uri: 'http://www.nytimes.com/' + media.multimedia[0].url,
-        };
+        //console.log('Pas d'image');
       }
     }
+  }
+  render() {
+    const {media, displayMediaDetail} = this.props;
     return (
       <TouchableOpacity
         style={styles.item}
@@ -43,13 +42,7 @@ class MediaItem extends React.Component {
           <View style={{flex: 2, justifyContent: 'space-between'}}>
             <Text style={styles.title}>{media.headline.main}</Text>
           </View>
-          <View style={{flex: 1}}>
-            <Image
-              style={styles.image}
-              source={uriImage}
-              onError={({nativeEvent: {error}}) => console.log('error')}
-            />
-          </View>
+          <View style={{flex: 1}}>{this._image()}</View>
         </View>
         <View
           style={{
@@ -81,7 +74,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
   },
   category: {
-    color: 'lightgrey',
+    color: 'grey',
     fontSize: 12,
     fontFamily: 'Helvetica',
   },
@@ -91,17 +84,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica',
   },
   image: {
-    opacity: opacity,
     width: 110,
     height: 69,
   },
 });
-/*
-<Image
-  style={styles.image}
-  source={{
-    uri: 'http://www.nytimes.com/' + media.multimedia[0].url,
-  }}
-  onError=({ nativeEvent: {error} }) => console.log(error)
-/>
-*/

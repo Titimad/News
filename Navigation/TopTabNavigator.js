@@ -1,10 +1,8 @@
-//AlaUneTopTabNavigator.js
+//TopTabNavigator.js
 import React from 'react';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import MainStackNavigator from '../Navigation/StackNavigator';
-import RootStackNavigator from '../Navigation/RootStackNavigator';
-import TopTabAlaUne from '../Components/TopTabAlaUne';
+import MediaFlatList from '../Components/MediaFlatList';
 import MediaDetail from '../Components/MediaDetail';
 
 const Tab = createMaterialTopTabNavigator();
@@ -12,10 +10,10 @@ const Tab = createMaterialTopTabNavigator();
 const TopTabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="General"
+      initialRouteName="Front Page"
       screenOptions={{
         tabBarShowIcon: false,
-        tabBarScrollEnabled: false,
+        tabBarScrollEnabled: true,
         tabBarIndicatorStyle: {
           backgroundColor: 'dodgerblue',
           height: 3,
@@ -44,67 +42,60 @@ const TopTabNavigator = () => {
         swipeEnabled: true,
       }}>
       <Tab.Screen
-        name="General"
-        component={TopTabAlaUne}
+        name="Front Page"
+        component={MediaFlatList}
         options={{
-          tabBarLabel: 'General',
+          tabBarLabel: 'Front Page',
         }}
-        initialParams={{category: 'general'}}
+        initialParams={{category: 'Front Page'}}
       />
       <Tab.Screen
         name="Business"
-        component={MediaDetail}
+        component={MediaFlatList}
         options={{
           tabBarLabel: 'Business',
         }}
-        initialParams={{category: 'business'}}
+        initialParams={{category: 'Business'}}
       />
       <Tab.Screen
-        name="MediaDetail"
-        component={MediaDetail}
+        name="Fashion & Style"
+        component={MediaFlatList}
         options={{
-          tabBarLabel: 'MediaDetail',
+          tabBarLabel: 'Fashion & Style',
         }}
-      />
-      <Tab.Screen
-        name="Entertainment"
-        component={MediaDetail}
-        options={{
-          tabBarLabel: 'Entertainment',
-        }}
-        initialParams={{category: 'entertainment'}}
+        initialParams={{category: 'Fashion & Style'}}
       />
       <Tab.Screen
         name="Health"
-        component={MediaDetail}
+        component={MediaFlatList}
         options={{
           tabBarLabel: 'Health',
         }}
-        initialParams={{category: 'health'}}
+        initialParams={{category: 'Health'}}
       />
       <Tab.Screen
         name="Science"
-        component={MediaDetail}
+        component={MediaFlatList}
         options={{
           tabBarLabel: 'Science',
         }}
-        initialParams={{category: 'science'}}
+        initialParams={{category: 'Science'}}
       />
       <Tab.Screen
         name="Sports"
-        component={MediaDetail}
+        component={MediaFlatList}
         options={{
           tabBarLabel: 'Sports',
         }}
-        initialParams={{category: 'sports'}}
+        initialParams={{category: 'Sports'}}
       />
       <Tab.Screen
         name="Technology"
-        component={MediaDetail}
+        component={MediaFlatList}
         options={{
           tabBarLabel: 'Technology',
         }}
-        initialParams={{category: 'technology'}}
+        initialParams={{category: 'Technology'}}
       />
     </Tab.Navigator>
   );

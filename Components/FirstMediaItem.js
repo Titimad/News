@@ -14,32 +14,39 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class FirstMediaItem extends React.Component {
   render() {
-    const {media} = this.props;
-    var uriImage = (uriImage = {
-      uri: 'http://www.nytimes.com/images/2021/09/01/nyregion/01kelly/merlin_193409475_bad6f472-64e2-40e6-99ed-83fe0c01703a-articleLarge.jpg',
-    });
-    console.log('media: ' + media);
-    return (
-      <View>
-        <ImageBackground
-          style={styles.imageAlaUne}
-          source={{
-            uri: 'http://www.nytimes.com/images/2021/09/01/nyregion/01kelly/merlin_193409475_bad6f472-64e2-40e6-99ed-83fe0c01703a-articleLarge.jpg',
-          }}>
-          <LinearGradient
-            colors={['transparent', 'black']}
-            start={{x: 0.0, y: 0.52}}
-            end={{x: 0.0, y: 1.0}}
-            locations={[0, 0.5]}
-            style={styles.box}>
-            <Text style={styles.titleAlaUne}>Titre à la Une</Text>
-            <View style={{alignItems: 'flex-end'}}>
-              <Ionicons name="bookmark-outline" color="lightgrey" size={24} />
-            </View>
-          </LinearGradient>
-        </ImageBackground>
-      </View>
-    );
+    const {media, displayMediaDetail, category} = this.props;
+    console.log('Category dans FirstMediaItem: ' + category);
+    if ((media != undefined) & (category == 'Front Page')) {
+      return (
+        <TouchableOpacity onPress={() => displayMediaDetail(media)}>
+          <View>
+            <ImageBackground
+              style={styles.imageAlaUne}
+              source={{
+                uri: 'http://www.nytimes.com/' + media.multimedia[0].url,
+              }}>
+              <LinearGradient
+                colors={['transparent', 'black']}
+                start={{x: 0.0, y: 0.52}}
+                end={{x: 0.0, y: 1.0}}
+                locations={[0, 0.5]}
+                style={styles.box}>
+                <Text style={styles.titleAlaUne}>{media.headline.main}</Text>
+                <View style={{alignItems: 'flex-end'}}>
+                  <Ionicons
+                    name="bookmark-outline"
+                    color="lightgrey"
+                    size={24}
+                  />
+                </View>
+              </LinearGradient>
+            </ImageBackground>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return <View></View>;
+    }
   }
 }
 export default FirstMediaItem;

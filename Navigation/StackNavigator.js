@@ -4,9 +4,6 @@ import {View, Text} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import TopTabNavigator from '../Navigation/TopTabNavigator';
-import RootStackNavigator from '../Navigation/RootStackNavigator';
-import TopTabAlaUne from '../Components/TopTabAlaUne';
-import MediaDetail from '../Components/MediaDetail';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const Stack = createStackNavigator();
@@ -30,7 +27,7 @@ const MainStackNavigator = () => {
       initialRouteName="The News"
       screenOptions={screenOptionStyle}>
       <Stack.Screen
-        name="Le Journal"
+        name="The News"
         component={TopTabNavigator}
         options={{
           headerLeft: props => (
