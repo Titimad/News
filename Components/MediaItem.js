@@ -14,7 +14,6 @@ class MediaItem extends React.Component {
   _image() {
     if (this.props.media.multimedia[0] != undefined) {
       {
-        //    console.log("Image présente");
         return (
           <Image
             style={styles.image}
@@ -25,10 +24,6 @@ class MediaItem extends React.Component {
             onError={({nativeEvent: {error}}) => console.log('error')}
           />
         );
-      }
-    } else {
-      {
-        //console.log('Pas d'image');
       }
     }
   }

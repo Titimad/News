@@ -1,6 +1,6 @@
 //StackNavigator.js
 import React from 'react';
-import {View, Text} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import TopTabNavigator from '../Navigation/TopTabNavigator';
@@ -45,7 +45,13 @@ const MainStackNavigator = () => {
           ),
           headerRight: props => (
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <FontAwesome name="user-circle-o" color="white" size={24} />
+              <TouchableOpacity
+                onPress={() => {
+                  <ParametersDetail />;
+                  console.log('Boutton user');
+                }}>
+                <FontAwesome name="user-circle-o" color="white" size={24} />
+              </TouchableOpacity>
               <View
                 style={{
                   marginLeft: 10,
@@ -70,4 +76,5 @@ const MainStackNavigator = () => {
     </Stack.Navigator>
   );
 };
+
 export default MainStackNavigator;

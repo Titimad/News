@@ -6,9 +6,7 @@ export function getMediaFromApiWithSearchedText(filter) {
     filter +
     '&api-key=' +
     API_TOKEN;
-  console.log("L'URL appelé est: " + url);
   return fetch(url)
     .then(response => response.json())
     .catch(error => console.error(error));
-  console.log('Fin de MediaStackApi');
 }

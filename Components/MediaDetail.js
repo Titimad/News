@@ -9,6 +9,7 @@ import {
   Dimensions,
   Alert,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 
 import {WebView} from 'react-native-webview';
@@ -33,6 +34,7 @@ class MediaDetail extends React.Component {
   }
   render() {
     const web_url = this.props.web_url;
+    const closeModal = this.props.closeModal;
     return (
       <SafeAreaView style={{backgroundColor: 'white'}}>
         <WebView
@@ -45,7 +47,9 @@ class MediaDetail extends React.Component {
         />
         <View style={styles.limitTabBarMenu} />
         <View style={styles.tabBarMenu}>
-          <Text style={styles.crossTabBarMenu}>X</Text>
+          <TouchableOpacity onPress={closeModal}>
+            <Text style={styles.crossTabBarMenu}>X</Text>
+          </TouchableOpacity>
           <Octicons
             name="settings"
             color="black"

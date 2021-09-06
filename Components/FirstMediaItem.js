@@ -15,7 +15,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 class FirstMediaItem extends React.Component {
   render() {
     const {media, displayMediaDetail, category} = this.props;
-    console.log('Category dans FirstMediaItem: ' + category);
     if ((media != undefined) & (category == 'Front Page')) {
       return (
         <TouchableOpacity onPress={() => displayMediaDetail(media)}>

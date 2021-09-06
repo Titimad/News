@@ -24,14 +24,14 @@ import MediaDetail from '../Components/MediaDetail';
 class MediaFlatList extends React.Component {
   constructor(props) {
     super(props);
+    this._closeModal = this._closeModal.bind(this);
     this.state = {
       medias: undefined,
       isLoading: true,
       mediasLoaded: false,
       modalVisible: false,
       media: {
-        web_url:
-          'https://www.nytimes.com/2021/09/01/nyregion/r-kelly-trial.html',
+        web_url: '',
       },
     };
   }
@@ -59,25 +59,17 @@ class MediaFlatList extends React.Component {
   }
 
   _loadMedias() {
-    console.log('Execution de _loadMedias');
-    console.log(
-      'Dans _loadMedias, this.props.route.params.category = ' +
-        this.props.route.params.category,
-    );
     const category = this.props.route.params.category;
     this.setState({isLoading: true});
     getMediaFromApiWithSearchedText(category).then(data => {
       this.setState({
         medias: data.response.docs,
-        isLoading: false, // Arrêt du chargement
+        isLoading: false,
       });
     });
-
-    //    console.log('Fin de _loadMedias');
   }
 
   _displayMediaDetail = media => {
-    console.log('Affichage du média: ' + media.title);
     this.setState({modalVisible: true, media: media});
   };
 
@@ -92,15 +84,14 @@ class MediaFlatList extends React.Component {
       return this.state.medias[id];
     }
   }
-
+  _closeModal() {
+    this.setState({modalVisible: false});
+  }
   _toggleFavorite() {
     //Action à faire si ajout à "Vos sélections"
     console.log('_toggleFavorite()');
   }
   async componentDidMount() {
-    console.log(
-      'this.props.route.params.category = ' + this.props.route.params.category,
-    );
     try {
       await this._loadMedias();
     } catch (e) {
@@ -124,7 +115,10 @@ class MediaFlatList extends React.Component {
               Alert.alert('Modal has been closed.');
               this.setState({modalVisible: false});
             }}>
-            <MediaDetail web_url={this.state.media.web_url} />
+            <MediaDetail
+              web_url={this.state.media.web_url}
+              closeModal={this._closeModal}
+            />
           </Modal>
         </GestureRecognizer>
         <FlatList
