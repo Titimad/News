@@ -26,7 +26,7 @@ import ParametersDetail from './Components/ParametersDetail';
 
 import auth from '@react-native-firebase/auth';
 
-function LoginApp() {
+function IconUser() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
@@ -40,18 +40,20 @@ function LoginApp() {
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
+    console.log('User: ' + user.email);
   }, []);
   if (initializing) return null;
+  console.log('Dans LoginApp, User = ' + user);
   if (!user) {
     return (
       <View>
-        <Text>Login</Text>
+        <FontAwesome name="user-times" color="white" size={24} />
       </View>
     );
   }
   return (
     <View>
-      <Text>Welcome {user.email}</Text>
+      <FontAwesome name="user-circle-o" color="white" size={24} />
     </View>
   );
 }
@@ -60,54 +62,16 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this._closeModalParam = this._closeModalParam.bind(this);
-    this.state = {modalVisible: false};
-  }
-  _createUser() {
-    auth()
-      .createUserWithEmailAndPassword('titimad64@icloud.com', 'password')
-      .then(() => {
-        console.log('User account created & signed in!');
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-        }
-
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-        }
-
-        console.error(error);
-      });
-  }
-  _logInUser() {
-    auth()
-      .signInWithEmailAndPassword('titimad64@icloud.com', 'password')
-      .then(() => {
-        console.log('User account created & signed in!');
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-        }
-
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-        }
-
-        console.error(error);
-      });
-  }
-  _logOff() {
-    auth()
-      .signOut()
-      .then(() => console.log('User signed out!'));
+    this.state = {modalVisible: false, user: null};
   }
   _openModalParam() {
     this.setState({modalVisible: true});
   }
   _closeModalParam() {
     this.setState({modalVisible: false});
+  }
+  _iconUser() {
+    const user = auth().currentUser;
   }
   componentDidMount() {
     /*auth()
@@ -143,7 +107,6 @@ export default class App extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        {/*<LoginApp />*/}
         <Modal
           style={styles.modalView}
           animationType="slide"
@@ -153,13 +116,10 @@ export default class App extends React.Component {
             Alert.alert('Modal has been closed.');
             this.setState({modalVisible: false});
           }}>
-          <LoginApp />
-          <Button title="Create account" onPress={() => this._createUser()} />
-          <Button title="Log in" onPress={() => this._logInUser()} />
-          <Button title="Log off" onPress={() => this._logOff()} />
-          <TouchableOpacity onPress={() => this._closeModalParam()}>
-            <Text>FERMER</Text>
-          </TouchableOpacity>
+          <ParametersDetail
+            closeModalParam={this._closeModalParam}
+            user={this.state.user}
+          />
         </Modal>
         <StatusBar barStyle={'dark-content'} />
         <View
@@ -189,7 +149,7 @@ export default class App extends React.Component {
               onPress={() => {
                 this._openModalParam();
               }}>
-              <FontAwesome name="user-circle-o" color="white" size={24} />
+              <IconUser />
             </TouchableOpacity>
             <View
               style={{
@@ -223,7 +183,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     justifyContent: 'space-between',
-    //    marginTop: 32,
   },
   modalView: {
     margin: 0,
@@ -231,6 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 0,
     alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
