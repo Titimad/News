@@ -25,7 +25,7 @@ class Favorites extends React.Component {
     super(props);
     this._closeModal = this._closeModal.bind(this);
     this.state = {
-      medias: null,
+      favoriteMedias: null,
       isLoading: true,
       mediasLoaded: false,
       modalVisible: false,
@@ -35,9 +35,8 @@ class Favorites extends React.Component {
     };
     database()
       .ref('/user/favorites')
-      .once('value')
-      .then(snapshot => {
-        this.setState({medias: snapshot.val()});
+      .on('value', snapshot => {
+        this.setState({favoriteMedias: snapshot.val()});
         console.log('User data: ', snapshot.val());
       });
   }
@@ -75,6 +74,7 @@ class Favorites extends React.Component {
   _toggleFavorite(media) {
     //Action à faire si ajout à "Vos sélections"
     const user = auth().currentUser;
+    this.props.user = user;
     console.log('user: ' + user);
     database()
       .ref('/user/favorites')
@@ -118,16 +118,17 @@ class Favorites extends React.Component {
           </Modal>
         </GestureRecognizer>
         <FlatList
-          data={this.state.medias}
+          data={this.state.favoriteMedias}
           renderItem={({item}) => (
             <MediaItem
-              media={item}
+              media={item.media}
               displayMediaDetail={this._displayMediaDetail}
               toggleFavorite={this._toggleFavorite}
             />
           )}
           keyExtractor={item => item._id}
           ItemSeparatorComponent={this._flatListItemSeparator}
+          extraData={this.state.favoriteMedias}
         />
         {this._displayLoading()}
       </SafeAreaView>

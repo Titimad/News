@@ -8,9 +8,15 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 class MediaItem extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
   _image() {
     if (this.props.media.multimedia[0] != undefined) {
       {
@@ -27,8 +33,43 @@ class MediaItem extends React.Component {
       }
     }
   }
+  _toggleFavorite(media, numberOfFavoriteMedias) {
+    //Action à faire si ajout à "Vos sélections"
+    database()
+      .ref('/user/favorites')
+      .once('value')
+      .then(snapshot => {
+        this.setState(
+          {
+            numberOfFavoriteMedias: snapshot.val().length,
+          },
+          () => {
+            console.log('User data: ', snapshot.val());
+            const user = auth().currentUser;
+            const reference = '/user/favorites/' + snapshot.val().length;
+            console.log('reference: ' + reference);
+            console.log('user: ' + user);
+            database()
+              .ref(reference)
+              .update({
+                media,
+              })
+              .then(data => {
+                //success callback
+                console.log('data ', data);
+              })
+              .catch(error => {
+                //error callback
+                console.log('error ', error);
+              });
+          },
+        );
+      });
+
+    //  console.log('_toggleFavorite()' + media);
+  }
   render() {
-    const {media, displayMediaDetail, toggleFavorite} = this.props;
+    const {media, displayMediaDetail, numberOfFavoriteMedias} = this.props;
     return (
       <TouchableOpacity
         style={styles.item}
@@ -50,7 +91,7 @@ class MediaItem extends React.Component {
             name="bookmark-outline"
             color="lightgrey"
             size={24}
-            onPress={() => toggleFavorite(media)}
+            onPress={() => this._toggleFavorite(media, numberOfFavoriteMedias)}
           />
         </View>
       </TouchableOpacity>

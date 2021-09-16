@@ -28,6 +28,8 @@ class MediaFlatList extends React.Component {
     this._closeModal = this._closeModal.bind(this);
     this.state = {
       medias: undefined,
+      favoriteMedias: null,
+      numberOfFavoriteMedias: 0,
       isLoading: true,
       mediasLoaded: false,
       modalVisible: false,
@@ -35,6 +37,16 @@ class MediaFlatList extends React.Component {
         web_url: '',
       },
     };
+    database()
+      .ref('/user/favorites')
+      .once('value')
+      .then(snapshot => {
+        this.setState({
+          favoriteMedias: snapshot.val(),
+          numberOfFavoriteMedias: snapshot.val().length,
+        });
+        console.log('User data: ', snapshot.val());
+      });
   }
 
   _displayLoading() {
@@ -88,26 +100,6 @@ class MediaFlatList extends React.Component {
   _closeModal() {
     this.setState({modalVisible: false});
   }
-
-  _toggleFavorite(media) {
-    //Action à faire si ajout à "Vos sélections"
-    const user = auth().currentUser;
-    console.log('user: ' + user);
-    database()
-      .ref('/user/favorites')
-      .set({
-        0: media,
-      })
-      .then(data => {
-        //success callback
-        console.log('data ', data);
-      })
-      .catch(error => {
-        //error callback
-        console.log('error ', error);
-      });
-    //  console.log('_toggleFavorite()' + media);
-  }
   async componentDidMount() {
     try {
       await this._loadMedias();
@@ -143,7 +135,7 @@ class MediaFlatList extends React.Component {
             <MediaItem
               media={item}
               displayMediaDetail={this._displayMediaDetail}
-              toggleFavorite={this._toggleFavorite}
+              numberOfFavoriteMedias={this.state.numberOfFavoriteMedias}
             />
           )}
           keyExtractor={item => item._id}
