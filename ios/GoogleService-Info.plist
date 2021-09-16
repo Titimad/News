@@ -30,5 +30,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:691999463541:ios:29744d20db6b0a9d35803c</string>
+	<key>DATABASE_URL</key>
+	<string>https://news-fb0c4-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
 </plist>

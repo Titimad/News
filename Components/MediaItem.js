@@ -28,7 +28,7 @@ class MediaItem extends React.Component {
     }
   }
   render() {
-    const {media, displayMediaDetail} = this.props;
+    const {media, displayMediaDetail, toggleFavorite} = this.props;
     return (
       <TouchableOpacity
         style={styles.item}
@@ -50,7 +50,7 @@ class MediaItem extends React.Component {
             name="bookmark-outline"
             color="lightgrey"
             size={24}
-            onPress={() => this._toggleFavorite()}
+            onPress={() => toggleFavorite(media)}
           />
         </View>
       </TouchableOpacity>

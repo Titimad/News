@@ -9,7 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //import MainStackNavigator from '../Navigation/StackNavigator';
 import TopTabNavigator from '../Navigation/TopTabNavigator';
 import ParametersDetail from '../Components/ParametersDetail';
-import BottomTabVosSelection from '../Components/BottomTabVosSelection';
+import Favorites from '../Components/Favorites';
 import BottomTabMenu from '../Components/BottomTabMenu';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -87,7 +87,7 @@ const BottomTabsNavigator = () => {
       />
       <Tab.Screen
         name="Your selections"
-        component={BottomTabVosSelection}
+        component={Favorites}
         options={{
           tabBarLabel: 'Your selections',
           tabBarIcon: ({color, size}) => (

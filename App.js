@@ -18,6 +18,8 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
+import firebase from '@react-native-firebase/app';
+import database from '@react-native-firebase/database';
 import Modal from 'react-native-modal';
 import {NavigationContainer} from '@react-navigation/native';
 import BottomTabsNavigator from './Navigation/BottomTabsNavigator';
@@ -43,7 +45,7 @@ function IconUser() {
     console.log('User: ' + user.email);
   }, []);
   if (initializing) return null;
-  console.log('Dans LoginApp, User = ' + user);
+  //  console.log('Dans LoginApp, User = ' + user);
   if (!user) {
     return (
       <View>

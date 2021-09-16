@@ -1,4 +1,4 @@
-//MediaFlatList.js
+//Favorites.js
 import React from 'react';
 import {
   SafeAreaView,
@@ -16,18 +16,16 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import Modal from 'react-native-modal';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-import {getMediaFromApiWithSearchedText} from '../API/MediaStackApi';
 
 import MediaItem from '../Components/MediaItem';
-import FirstMediaItem from '../Components/FirstMediaItem';
 import MediaDetail from '../Components/MediaDetail';
 
-class MediaFlatList extends React.Component {
+class Favorites extends React.Component {
   constructor(props) {
     super(props);
     this._closeModal = this._closeModal.bind(this);
     this.state = {
-      medias: undefined,
+      medias: null,
       isLoading: true,
       mediasLoaded: false,
       modalVisible: false,
@@ -35,6 +33,13 @@ class MediaFlatList extends React.Component {
         web_url: '',
       },
     };
+    database()
+      .ref('/user/favorites')
+      .once('value')
+      .then(snapshot => {
+        this.setState({medias: snapshot.val()});
+        console.log('User data: ', snapshot.val());
+      });
   }
 
   _displayLoading() {
@@ -59,32 +64,10 @@ class MediaFlatList extends React.Component {
     );
   }
 
-  _loadMedias() {
-    const category = this.props.route.params.category;
-    this.setState({isLoading: true});
-    getMediaFromApiWithSearchedText(category).then(data => {
-      this.setState({
-        medias: data.response.docs,
-        isLoading: false,
-      });
-    });
-  }
-
   _displayMediaDetail = media => {
     this.setState({modalVisible: true, media: media});
   };
 
-  _firstMediaItemChoice() {
-    if (this.state.medias == undefined) {
-      return undefined;
-    } else {
-      var id = Math.trunc(new Date().getMinutes() / 6);
-      while (this.state.medias[id].multimedia[0] == undefined) {
-        id = Math.trunc(10 * Math.random());
-      }
-      return this.state.medias[id];
-    }
-  }
   _closeModal() {
     this.setState({modalVisible: false});
   }
@@ -108,13 +91,10 @@ class MediaFlatList extends React.Component {
       });
     //  console.log('_toggleFavorite()' + media);
   }
-  async componentDidMount() {
-    try {
-      await this._loadMedias();
-    } catch (e) {
-      console.log('Erreur dans le chargement de componentDidMount: ' + e);
-    } finally {
-    }
+  componentDidMount() {
+    this.setState({
+      isLoading: false,
+    });
   }
   render() {
     return (
@@ -147,13 +127,6 @@ class MediaFlatList extends React.Component {
             />
           )}
           keyExtractor={item => item._id}
-          ListHeaderComponent={() => (
-            <FirstMediaItem
-              media={this._firstMediaItemChoice()}
-              displayMediaDetail={this._displayMediaDetail}
-              category={this.props.route.params.category}
-            />
-          )}
           ItemSeparatorComponent={this._flatListItemSeparator}
         />
         {this._displayLoading()}
@@ -165,6 +138,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    justifyContent: 'flex-end',
   },
   loading_container: {
     position: 'absolute',
@@ -193,4 +167,4 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
-export default MediaFlatList;
+export default Favorites;
