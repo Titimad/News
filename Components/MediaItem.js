@@ -33,35 +33,101 @@ class MediaItem extends React.Component {
       }
     }
   }
-  _toggleFavorite(media, numberOfFavoriteMedias) {
-    //Action à faire si ajout à "Vos sélections"
+  _toggleFavorite(media) {
+    //Action à faire si boutton Favoris appuyé
+    //Si ajout...
+    console.log('Dans _toggleFavorite, media = ' + media);
+    function testDataBaseEmpty(dataBase) {
+      if (dataBase == null) {
+        return 0;
+      } else {
+        return dataBase.length;
+      }
+    }
     database()
       .ref('/user/favorites')
       .once('value')
       .then(snapshot => {
         this.setState(
           {
-            numberOfFavoriteMedias: snapshot.val().length,
+            favoriteMedias: snapshot.val(),
+            numberOfFavoriteMedias: testDataBaseEmpty(snapshot.val()),
           },
           () => {
             console.log('User data: ', snapshot.val());
             const user = auth().currentUser;
-            const reference = '/user/favorites/' + snapshot.val().length;
-            console.log('reference: ' + reference);
+
+            var mediaExisting = false;
+
             console.log('user: ' + user);
-            database()
-              .ref(reference)
-              .update({
-                media,
-              })
-              .then(data => {
-                //success callback
-                console.log('data ', data);
-              })
-              .catch(error => {
-                //error callback
-                console.log('error ', error);
-              });
+            if (this.state.numberOfFavoriteMedias != 0) {
+              var i = 0;
+              console.log(
+                'this.state.numberOfFavoriteMedias = ' +
+                  this.state.numberOfFavoriteMedias,
+              );
+              while (i < this.state.numberOfFavoriteMedias) {
+                console.log('Dans while, i = ' + i);
+                if (this.state.favoriteMedias[i]._id == media._id) {
+                  //supprimer car déjà présent
+                  console.log('On supprime');
+                  var favoriteMedias = this.state.favoriteMedias;
+                  favoriteMedias.splice(i, 1);
+                  console.log(
+                    'favoriteMedias après suppression = ' + favoriteMedias,
+                  );
+                  database()
+                    .ref('/user')
+                    .set({
+                      favorites: favoriteMedias,
+                    })
+                    .then(data => {
+                      //success callback
+                      console.log('data ', data);
+                    })
+                    .catch(error => {
+                      //error callback
+                      console.log('error ', error);
+                    });
+                  mediaExisting = true;
+                  break;
+                }
+                i++;
+              }
+              console.log('Après while, i = ' + i);
+            } else {
+              mediaExisting = false;
+            }
+            if (!mediaExisting) {
+              //Ajouter le média car pas présent
+              var favoriteMedias = [];
+              console.log('On ajoute');
+              const reference = media._id.slice(14);
+              console.log('reference: ' + reference);
+              //Reconstruction du json
+              //const mediaAjout = media._id.slice(14) + ': ' + media;
+              //console.log('mediaAjout = ' + mediaAjout);
+              if (this.state.favoriteMedias == null) {
+                favoriteMedias = [];
+              } else {
+                favoriteMedias = this.state.favoriteMedias;
+              }
+
+              favoriteMedias.push(media);
+              database()
+                .ref('/user')
+                .update({
+                  favorites: favoriteMedias,
+                })
+                .then(data => {
+                  //success callback
+                  console.log('data ', data);
+                })
+                .catch(error => {
+                  //error callback
+                  console.log('error ', error);
+                });
+            }
           },
         );
       });
@@ -69,7 +135,7 @@ class MediaItem extends React.Component {
     //  console.log('_toggleFavorite()' + media);
   }
   render() {
-    const {media, displayMediaDetail, numberOfFavoriteMedias} = this.props;
+    const {media, displayMediaDetail} = this.props;
     return (
       <TouchableOpacity
         style={styles.item}
@@ -91,7 +157,7 @@ class MediaItem extends React.Component {
             name="bookmark-outline"
             color="lightgrey"
             size={24}
-            onPress={() => this._toggleFavorite(media, numberOfFavoriteMedias)}
+            onPress={() => this._toggleFavorite(media)}
           />
         </View>
       </TouchableOpacity>

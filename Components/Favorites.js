@@ -71,26 +71,6 @@ class Favorites extends React.Component {
     this.setState({modalVisible: false});
   }
 
-  _toggleFavorite(media) {
-    //Action à faire si ajout à "Vos sélections"
-    const user = auth().currentUser;
-    this.props.user = user;
-    console.log('user: ' + user);
-    database()
-      .ref('/user/favorites')
-      .set({
-        0: media,
-      })
-      .then(data => {
-        //success callback
-        console.log('data ', data);
-      })
-      .catch(error => {
-        //error callback
-        console.log('error ', error);
-      });
-    //  console.log('_toggleFavorite()' + media);
-  }
   componentDidMount() {
     this.setState({
       isLoading: false,
@@ -121,14 +101,12 @@ class Favorites extends React.Component {
           data={this.state.favoriteMedias}
           renderItem={({item}) => (
             <MediaItem
-              media={item.media}
+              media={item}
               displayMediaDetail={this._displayMediaDetail}
-              toggleFavorite={this._toggleFavorite}
             />
           )}
           keyExtractor={item => item._id}
           ItemSeparatorComponent={this._flatListItemSeparator}
-          extraData={this.state.favoriteMedias}
         />
         {this._displayLoading()}
       </SafeAreaView>
