@@ -51,7 +51,8 @@ const InitialIcon = ({letter, color, size}) => {
   );
 };
 
-const BottomTabsNavigator = () => {
+const BottomTabsNavigator = user => {
+  console.log('user dans BottomTabsNavigator =' + user);
   return (
     <Tab.Navigator
       initialRouteName="A la Une"
@@ -94,6 +95,7 @@ const BottomTabsNavigator = () => {
             <Ionicons name="md-bookmarks-outline" color={color} size={size} />
           ),
         }}
+        initialParams={{user: user}}
       />
       <Tab.Screen
         name="Menu"

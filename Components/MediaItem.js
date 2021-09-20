@@ -10,13 +10,48 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+
+import {connect} from 'react-redux';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const mapStateToProps = state => {
+  return {state};
+};
+
 class MediaItem extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {};
   }
+
+  _iconFavorite(mediaFavorite, media) {
+    //Renvoie l'icône à afficher si article favori ou params
+    if (mediaFavorite) {
+      return (
+        <View>
+          <Ionicons
+            name="bookmark"
+            color="lightgrey"
+            size={24}
+            onPress={() => this._toggleFavorite(media)}
+          />
+        </View>
+      );
+    }
+    return (
+      <View>
+        <Ionicons
+          name="bookmark-outline"
+          color="lightgrey"
+          size={24}
+          onPress={() => this._toggleFavorite(media)}
+        />
+      </View>
+    );
+  }
+
   _image() {
     if (this.props.media.multimedia[0] != undefined) {
       {
@@ -33,10 +68,19 @@ class MediaItem extends React.Component {
       }
     }
   }
+
   _toggleFavorite(media) {
     //Action à faire si boutton Favoris appuyé
+    console.log('_toggleFavorite exécutée');
+    console.log('_toggleFavorite props = ' + this.props);
+    const action = {type: 'TOGGLE_FAVORITE', value: media};
+    console.log('Dans _toggleFavorite, media = ' + media._id);
+    this.props.dispatch(action);
+    console.log('action TOGGLE_FAVORITE appelée');
+
     //Si ajout...
     console.log('Dans _toggleFavorite, media = ' + media);
+    /*
     function testDataBaseEmpty(dataBase) {
       if (dataBase == null) {
         return 0;
@@ -131,11 +175,17 @@ class MediaItem extends React.Component {
           },
         );
       });
-
+*/
     //  console.log('_toggleFavorite()' + media);
   }
+  componentDidUpdate() {
+    console.log('componentDidUpdate de MediaItem executé');
+    //  console.log('this.props.favoritesArticle = ' + this.props.favoritesArticle);
+  }
   render() {
-    const {media, displayMediaDetail} = this.props;
+    //  console.log('MediaItem props = ' + this.props);
+    const {media, displayMediaDetail, mediaFavorite} = this.props;
+    //  console.log('MediaItem props = ' + this.props);
     return (
       <TouchableOpacity
         style={styles.item}
@@ -153,18 +203,13 @@ class MediaItem extends React.Component {
             marginTop: 10,
           }}>
           <Text style={styles.category}>{media.section_name}</Text>
-          <Ionicons
-            name="bookmark-outline"
-            color="lightgrey"
-            size={24}
-            onPress={() => this._toggleFavorite(media)}
-          />
+          {this._iconFavorite(mediaFavorite, media)}
         </View>
       </TouchableOpacity>
     );
   }
 }
-export default MediaItem;
+export default connect(mapStateToProps)(MediaItem);
 
 const styles = StyleSheet.create({
   item: {

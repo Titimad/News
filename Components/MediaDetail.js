@@ -12,9 +12,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import {connect} from 'react-redux';
+
 import {WebView} from 'react-native-webview';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
+
+const mapStateToProps = state => {
+  return {user: state.user, favoritesArticle: state.favoritesArticle};
+};
 
 class MediaDetail extends React.Component {
   constructor(props) {
@@ -120,4 +126,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-export default MediaDetail;
+export default connect(mapStateToProps)(MediaDetail);
