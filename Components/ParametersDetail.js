@@ -10,9 +10,16 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
+
+import {connect} from 'react-redux';
+
 import Modal from 'react-native-modal';
 import auth from '@react-native-firebase/auth';
 import LogIn from './LogIn';
+
+const mapStateToProps = state => {
+  return {state};
+};
 
 const DATA = [
   {
@@ -106,10 +113,16 @@ class ParametersDetail extends React.Component {
     this.setState({modalVisible: false, user: auth().currentUser});
   }
   _logOff() {
+    console.log('Dans _logOff, user = ' + this.props.state.user);
     auth()
       .signOut()
-      .then(() => console.log('User signed out!'));
-    this.setState({user: null});
+      .then(() => {
+        console.log('User signed out!');
+        const action = {type: 'DISCONNECT', value: null};
+        this.props.dispatch(action);
+        console.log('Dans _logOff, user = ' + this.props.state.user);
+        this.setState({user: null});
+      });
   }
   render() {
     const closeModalParam = this.props.closeModalParam;
@@ -215,5 +228,4 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-
-export default ParametersDetail;
+export default connect(mapStateToProps)(ParametersDetail);

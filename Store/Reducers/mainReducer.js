@@ -1,4 +1,4 @@
-//favoriteReducer.js
+//mainReducer.js
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 var user;
@@ -10,7 +10,7 @@ if (auth().currentUser != null) {
 const initialState = {user: user, favoriteMedias: []};
 //console.log('initialState = ' + JSON.stringify(initialState));
 
-function toggleFavorite(state = initialState, action) {
+function mainReducer(state = initialState, action) {
   //  console.log('favoriteReducer exécutée. action =' + JSON.stringify(action));
   let nextState;
   switch (action.type) {
@@ -67,7 +67,7 @@ function toggleFavorite(state = initialState, action) {
       }
       return nextState || state;
     case 'INIT':
-      console.log('favoriteReducer, INIT');
+      console.log('mainReducer, INIT');
       console.log(action.value);
       console.log('state = ' + state.favoriteMedias);
       nextState = {
@@ -77,23 +77,23 @@ function toggleFavorite(state = initialState, action) {
       console.log('nextState = ' + JSON.stringify(nextState));
       return nextState || state;
     case 'DISCONNECT':
-      console.log('userReducer: ' + action.type);
+      console.log('mainReducer: DISCONNECT' + action.type);
       nextState = {
         user: null,
         favoriteMedias: [],
       };
       return nextState || state;
     case 'CONNECT':
-      console.log('favoriteReducer: CONNECT' + action.type);
+      console.log('mainReducer: CONNECT' + action.type);
       nextState = {
         user: action.value.user,
         favoriteMedias: action.value.favoriteMedias,
       };
       return nextState || state;
     default:
-      console.log('favoriteReducer: default');
+      console.log('mainReducer: default');
       return state;
   }
 }
 
-export default toggleFavorite;
+export default mainReducer;

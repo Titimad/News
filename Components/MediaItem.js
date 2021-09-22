@@ -71,112 +71,12 @@ class MediaItem extends React.Component {
 
   _toggleFavorite(media) {
     //Action à faire si boutton Favoris appuyé
-    console.log('_toggleFavorite exécutée');
-    console.log('_toggleFavorite props = ' + this.props);
+    //    console.log('_toggleFavorite exécutée');
+    //    console.log('_toggleFavorite props = ' + this.props);
     const action = {type: 'TOGGLE_FAVORITE', value: media};
-    console.log('Dans _toggleFavorite, media = ' + media._id);
+    //    console.log('Dans _toggleFavorite, media = ' + media._id);
     this.props.dispatch(action);
-    console.log('action TOGGLE_FAVORITE appelée');
-
-    //Si ajout...
-    console.log('Dans _toggleFavorite, media = ' + media);
-    /*
-    function testDataBaseEmpty(dataBase) {
-      if (dataBase == null) {
-        return 0;
-      } else {
-        return dataBase.length;
-      }
-    }
-    database()
-      .ref('/user/favorites')
-      .once('value')
-      .then(snapshot => {
-        this.setState(
-          {
-            favoriteMedias: snapshot.val(),
-            numberOfFavoriteMedias: testDataBaseEmpty(snapshot.val()),
-          },
-          () => {
-            console.log('User data: ', snapshot.val());
-            const user = auth().currentUser;
-
-            var mediaExisting = false;
-
-            console.log('user: ' + user);
-            if (this.state.numberOfFavoriteMedias != 0) {
-              var i = 0;
-              console.log(
-                'this.state.numberOfFavoriteMedias = ' +
-                  this.state.numberOfFavoriteMedias,
-              );
-              while (i < this.state.numberOfFavoriteMedias) {
-                console.log('Dans while, i = ' + i);
-                if (this.state.favoriteMedias[i]._id == media._id) {
-                  //supprimer car déjà présent
-                  console.log('On supprime');
-                  var favoriteMedias = this.state.favoriteMedias;
-                  favoriteMedias.splice(i, 1);
-                  console.log(
-                    'favoriteMedias après suppression = ' + favoriteMedias,
-                  );
-                  database()
-                    .ref('/user')
-                    .set({
-                      favorites: favoriteMedias,
-                    })
-                    .then(data => {
-                      //success callback
-                      console.log('data ', data);
-                    })
-                    .catch(error => {
-                      //error callback
-                      console.log('error ', error);
-                    });
-                  mediaExisting = true;
-                  break;
-                }
-                i++;
-              }
-              console.log('Après while, i = ' + i);
-            } else {
-              mediaExisting = false;
-            }
-            if (!mediaExisting) {
-              //Ajouter le média car pas présent
-              var favoriteMedias = [];
-              console.log('On ajoute');
-              const reference = media._id.slice(14);
-              console.log('reference: ' + reference);
-              //Reconstruction du json
-              //const mediaAjout = media._id.slice(14) + ': ' + media;
-              //console.log('mediaAjout = ' + mediaAjout);
-              if (this.state.favoriteMedias == null) {
-                favoriteMedias = [];
-              } else {
-                favoriteMedias = this.state.favoriteMedias;
-              }
-
-              favoriteMedias.push(media);
-              database()
-                .ref('/user')
-                .update({
-                  favorites: favoriteMedias,
-                })
-                .then(data => {
-                  //success callback
-                  console.log('data ', data);
-                })
-                .catch(error => {
-                  //error callback
-                  console.log('error ', error);
-                });
-            }
-          },
-        );
-      });
-*/
-    //  console.log('_toggleFavorite()' + media);
+    //    console.log('action TOGGLE_FAVORITE appelée');
   }
   componentDidUpdate() {
     console.log('componentDidUpdate de MediaItem executé');

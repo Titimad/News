@@ -52,7 +52,7 @@ const InitialIcon = ({letter, color, size}) => {
 };
 
 const BottomTabsNavigator = user => {
-  console.log('user dans BottomTabsNavigator =' + user);
+  console.log('user dans BottomTabsNavigator =' + JSON.stringify(user));
   return (
     <Tab.Navigator
       initialRouteName="A la Une"

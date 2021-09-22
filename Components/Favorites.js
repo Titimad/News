@@ -11,6 +11,7 @@ import {
   Dimensions,
   Alert,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
@@ -32,43 +33,6 @@ const mapStateToProps = state => {
 
 var userNow = auth().currentUser;
 
-function IconUser() {
-  // Set an initializing state whilst Firebase connects
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-
-  // Handle user state changes
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-    console.log('User: ' + user.email);
-  }, []);
-  if (initializing) return null;
-  //  console.log('Dans LoginApp, User = ' + user);
-  if (!user) {
-    userNow = user;
-    console.log('Pas connecté' + userNow);
-    return (
-      <View>
-        <FontAwesome name="user-times" color="black" size={24} />
-      </View>
-    );
-  } else {
-    userNow = user;
-    console.log('Connecté' + userNow);
-    return (
-      <View>
-        <FontAwesome name="user-circle-o" color="black" size={24} />
-      </View>
-    );
-  }
-}
-
 class Favorites extends React.Component {
   constructor(props) {
     super(props);
@@ -86,15 +50,24 @@ class Favorites extends React.Component {
         web_url: '',
       },
     };
-
-    database()
-      .ref('/user/favorites')
-      .on('value', snapshot => {
-        this.setState({
-          favoriteMedias: snapshot.val(),
+    if (this.props.state.user != null) {
+      database()
+        .ref('/user/favorites/favoriteMedias')
+        .once('value')
+        .then(snapshot => {
+          console.log(
+            'snapshot.val() après then. = ' + JSON.stringify(snapshot.val()),
+          );
+          const action = {
+            type: 'CONNECT',
+            value: {
+              user: auth().currentUser.email,
+              favoriteMedias: snapshot.val(),
+            },
+          };
+          this.props.dispatch(action);
         });
-        console.log('User data: ', snapshot.val());
-      });
+    }
   }
   _user() {
     // Set an initializing state whilst Firebase connects
@@ -163,11 +136,11 @@ class Favorites extends React.Component {
   }
   render() {
     console.log('render Favorites');
-    console.log('currentUser = ' + userNow);
+    console.log('currentUser = ' + JSON.stringify(userNow));
     console.log(
-      'this.props.state.favoriteMedias = ' + this.props.state.favoriteMedias,
+      'this.props.state.user = ' + JSON.stringify(this.props.state.user),
     );
-    if (userNow != null) {
+    if (this.props.state.user != null) {
       return (
         <SafeAreaView style={styles.container}>
           <GestureRecognizer
@@ -206,14 +179,48 @@ class Favorites extends React.Component {
               </Text>
             </View>
           />
-          <IconUser />
           {this._displayLoading()}
         </SafeAreaView>
       );
     } else {
       return (
-        <SafeAreaView>
-          <Text>Pas connecté !</Text>
+        <SafeAreaView style={styles.emptyList}>
+          <Text style={{textAlign: 'center', fontSize: 16}}>
+            {'\n'}To access your selections{'\n'}you need to be connected to
+            your account{'\n'}
+          </Text>
+          <Ionicons name="bookmarks-outline" color="lightgrey" size={96} />
+          <Text style={{textAlign: 'center', fontSize: 16, padding: 8}}>
+            {'\n'}You do not have an account ?
+          </Text>
+          <TouchableOpacity
+            style={styles.createAccountButton}
+            onPress={() => {}}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 16,
+                color: 'white',
+                fontWeight: 'bold',
+              }}>
+              Create an account
+            </Text>
+          </TouchableOpacity>
+          <Text style={{paddingTop: 20, textAlign: 'center', fontSize: 16}}>
+            {'\n'}You have already an account ?
+          </Text>
+
+          <Text
+            style={{
+              padding: 10,
+              textAlign: 'center',
+              fontSize: 16,
+              color: 'dodgerblue',
+              fontWeight: 'bold',
+            }}
+            onPress={() => {}}>
+            Log In
+          </Text>
         </SafeAreaView>
       );
     }
@@ -257,6 +264,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  createAccountButton: {
+    backgroundColor: 'dodgerblue',
+    borderRadius: 4,
+    paddingLeft: 60,
+    paddingRight: 60,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
 });
 export default connect(mapStateToProps)(Favorites);

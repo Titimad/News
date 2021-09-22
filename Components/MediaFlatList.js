@@ -54,28 +54,6 @@ class MediaFlatList extends React.Component {
         return dataBase.length;
       }
     }
-    /*  database()
-      .ref('/user/favorites')
-      .on('value', snapshot => {
-        this.setState({
-          favoriteMedias: snapshot.val(),
-          numberOfFavoriteMedias: testDataBaseEmpty(snapshot.val()),
-        });
-        console.log('User data: ', snapshot.val());
-      });*/
-    database()
-      .ref('/user/favorites/favoriteMedias')
-      .once('value')
-      .then(snapshot => {
-        console.log(
-          'snapshot.val() après then. = ' + JSON.stringify(snapshot.val()),
-        );
-
-        //      result = snapshot.val();
-        //      console.log('result =  ' + result);
-        const action = {type: 'INIT', value: snapshot.val()};
-        this.props.dispatch(action);
-      });
   }
 
   _displayLoading() {
@@ -127,8 +105,8 @@ class MediaFlatList extends React.Component {
     }
   }
   _mediaFavorite(item) {
-    console.log('this.props.state = ' + JSON.stringify(this.props.state));
-    if (this.props.state == undefined) {
+    //console.log('this.props.state = ' + JSON.stringify(this.props.state));
+    if (this.props.state != undefined) {
       //Test si le media est en favori. Renvoie l'index ou -1
       const favoriteMediaIndex = this.props.state.favoriteMedias.findIndex(
         itemOfFavoriteMedias => itemOfFavoriteMedias._id === item._id,
@@ -137,7 +115,7 @@ class MediaFlatList extends React.Component {
       if (favoriteMediaIndex != -1) {
         return true;
       } else {
-        console.log('_mediaFavorite = ' + false);
+        //console.log('_mediaFavorite = ' + false);
         return false;
       }
     } else {

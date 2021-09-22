@@ -1,7 +1,12 @@
 //configureStore.js
 
-import {createStore} from 'redux';
-//import user from './Reducers/userReducer';
-import toggleFavorite from './Reducers/favoriteReducer';
+import {createStore, combineReducers} from 'redux';
+import user from './Reducers/userReducer';
+import mainReducer from './Reducers/mainReducer';
+/*
+const rootReducer = combineReducers({
+  user: user,
+  toggleFavorite: toggleFavorite,
+});*/
 
-export default createStore(toggleFavorite);
+export default createStore(mainReducer);

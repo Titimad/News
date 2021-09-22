@@ -10,7 +10,13 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
+import {connect} from 'react-redux';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+
+const mapStateToProps = state => {
+  return {state};
+};
 
 class LogIn extends React.Component {
   constructor(props) {
@@ -39,6 +45,22 @@ class LogIn extends React.Component {
     auth()
       .signInWithEmailAndPassword('titimad64@icloud.com', 'password')
       .then(() => {
+        database()
+          .ref('/user/favorites/favoriteMedias')
+          .once('value')
+          .then(snapshot => {
+            console.log(
+              'snapshot.val() après then. = ' + JSON.stringify(snapshot.val()),
+            );
+            const action = {
+              type: 'CONNECT',
+              value: {
+                user: auth().currentUser.email,
+                favoriteMedias: snapshot.val(),
+              },
+            };
+            this.props.dispatch(action);
+          });
         console.log('User account created & signed in!');
       })
       .catch(error => {
@@ -110,5 +132,4 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-
-export default LogIn;
+export default connect(mapStateToProps)(LogIn);
