@@ -110,7 +110,7 @@ class ParametersDetail extends React.Component {
     this.setState({modalVisible: true});
   }
   _closeModalParam() {
-    this.setState({modalVisible: false, user: auth().currentUser});
+    this.setState({modalVisible: false});
   }
   _logOff() {
     console.log('Dans _logOff, user = ' + this.props.state.user);
@@ -126,7 +126,7 @@ class ParametersDetail extends React.Component {
   }
   render() {
     const closeModalParam = this.props.closeModalParam;
-    const user = this.state.user;
+    const user = this.props.state.user;
     console.log('User dans ParametersDetail: ' + user);
     return (
       <SafeAreaView style={styles.container}>
@@ -142,12 +142,7 @@ class ParametersDetail extends React.Component {
             Alert.alert('Modal has been closed.');
             this.setState({modalVisible: false});
           }}>
-          <LogIn
-            createUser={this.createUser}
-            logInUser={this.logInUser}
-            logOff={this.logOff}
-            closeModalParam={this._closeModalParam}
-          />
+          <LogIn closeModalParam={this._closeModalParam} />
         </Modal>
         <TouchableOpacity title="Close" onPress={closeModalParam}>
           <Text style={{color: '#007AFF', fontSize: 20, padding: 20}}>

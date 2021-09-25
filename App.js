@@ -44,24 +44,40 @@ function IconUser() {
 
   // Handle user state changes
   function onAuthStateChanged(user) {
+    console.log('App: Mise à jour du state user = ' + user);
     setUser(user);
-    if (initializing) setInitializing(false);
+    if (initializing) {
+      console.log('Avant mise à jour du state initializing = ' + initializing);
+      setInitializing(false);
+      console.log('Après mise à jour du state initializing = ' + initializing);
+    }
+    console.log('App: Fin de _onAuthStateChanged');
   }
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    console.log(
+      'Dans App/function onAuthStateChanged, subscriber = ' + subscriber,
+    );
     return subscriber; // unsubscribe on unmount
     console.log('User: ' + user.email);
   }, []);
-  if (initializing) return null;
+  if (initializing) {
+    console.log('initializing : return null');
+    return null;
+  }
   //  console.log('Dans LoginApp, User = ' + user);
   if (!user) {
+    console.log(
+      'App: test de !user. Pas connecté. initializing = ' + initializing,
+    );
     return (
       <View>
         <FontAwesome name="user-times" color="white" size={24} />
       </View>
     );
   }
+  console.log('Connecté');
   return (
     <View>
       <FontAwesome name="user-circle-o" color="white" size={24} />
@@ -85,6 +101,7 @@ class App extends React.Component {
     const user = auth().currentUser;
   }
   componentDidMount() {
+    console.log('App: componentDidMount');
     /*auth()
       .signInAnonymously()
       .then(() => {
@@ -114,8 +131,11 @@ class App extends React.Component {
         console.error(error);
       });*/
   }
-
+  componentDidUpdate() {
+    console.log('App: componentDidUpdate');
+  }
   render() {
+    console.log('App: render');
     return (
       <Provider store={Store}>
         <SafeAreaView style={styles.container}>

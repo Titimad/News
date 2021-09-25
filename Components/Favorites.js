@@ -26,26 +26,21 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import MediaItem from '../Components/MediaItem';
 import MediaDetail from '../Components/MediaDetail';
+import LogIn from './LogIn';
 
 const mapStateToProps = state => {
   return {state};
 };
 
-var userNow = auth().currentUser;
-
 class Favorites extends React.Component {
   constructor(props) {
     super(props);
     this._closeModal = this._closeModal.bind(this);
-    this._onAuthStateChanged = this._onAuthStateChanged.bind(this);
-    this._user = this._user.bind(this);
     this.state = {
-      favoriteMedias: null,
       isLoading: true,
       mediasLoaded: false,
       modalVisible: false,
       initializing: true,
-      user: null,
       media: {
         web_url: '',
       },
@@ -56,7 +51,8 @@ class Favorites extends React.Component {
         .once('value')
         .then(snapshot => {
           console.log(
-            'snapshot.val() après then. = ' + JSON.stringify(snapshot.val()),
+            'Dans Favorites, snapshot.val() après then. = ' +
+              JSON.stringify(snapshot.val()),
           );
           const action = {
             type: 'CONNECT',
@@ -69,22 +65,6 @@ class Favorites extends React.Component {
         });
     }
   }
-  _user() {
-    // Set an initializing state whilst Firebase connects
-
-    // Handle user state changes
-
-    if (this.state.initializing) return null;
-    //  console.log('Dans LoginApp, User = ' + user);
-    if (!user) {
-      return null;
-    }
-    return user;
-  }
-  _onAuthStateChanged(user) {
-    this.setState({user: user});
-    if (this.state.initializing) this.setState({initializing: false});
-  }
   _displayLoading() {
     if (this.state.isLoading) {
       return (
@@ -94,7 +74,6 @@ class Favorites extends React.Component {
       );
     }
   }
-
   _flatListItemSeparator() {
     return (
       <View
@@ -106,41 +85,28 @@ class Favorites extends React.Component {
       />
     );
   }
-
   _displayMediaDetail = media => {
     this.setState({modalVisible: true, media: media});
   };
-
+  _openModal() {
+    this.setState({modalVisible: true});
+  }
   _closeModal() {
     this.setState({modalVisible: false});
   }
-
   componentDidMount() {
     this.setState({
       isLoading: false,
     });
-    /*
-    const subscriber = auth().onAuthStateChanged(
-      this._onAuthStateChanged(user),
-    );
-    return subscriber; // unsubscribe on unmount
-    console.log('User: ' + user.email);*/
   }
-  componentDidUpdate() {
-    /*
-    const subscriber = auth().onAuthStateChanged(
-      this._onAuthStateChanged(user),
-    );
-    return subscriber; // unsubscribe on unmount
-    console.log('User: ' + user.email);*/
-  }
+  componentDidUpdate() {}
   render() {
     console.log('render Favorites');
-    console.log('currentUser = ' + JSON.stringify(userNow));
     console.log(
       'this.props.state.user = ' + JSON.stringify(this.props.state.user),
     );
     if (this.props.state.user != null) {
+      console.log('Dans Favorites, testConnect renvoie true');
       return (
         <SafeAreaView style={styles.container}>
           <GestureRecognizer
@@ -183,8 +149,23 @@ class Favorites extends React.Component {
         </SafeAreaView>
       );
     } else {
+      console.log('Dans Favorites, testConnect ne renvoie pas true');
       return (
         <SafeAreaView style={styles.emptyList}>
+          <Modal
+            style={styles.modalView}
+            animationType="slide"
+            animationIn={'slideInLeft'}
+            animationOut="slideOutRight"
+            swipeDirection={['right']}
+            transparent={false}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              this.setState({modalVisible: false});
+            }}>
+            <LogIn closeModalParam={this._closeModal} />
+          </Modal>
           <Text style={{textAlign: 'center', fontSize: 16}}>
             {'\n'}To access your selections{'\n'}you need to be connected to
             your account{'\n'}
@@ -218,7 +199,9 @@ class Favorites extends React.Component {
               color: 'dodgerblue',
               fontWeight: 'bold',
             }}
-            onPress={() => {}}>
+            onPress={() => {
+              this._openModal();
+            }}>
             Log In
           </Text>
         </SafeAreaView>

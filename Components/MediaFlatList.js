@@ -105,8 +105,8 @@ class MediaFlatList extends React.Component {
     }
   }
   _mediaFavorite(item) {
-    //console.log('this.props.state = ' + JSON.stringify(this.props.state));
-    if (this.props.state != undefined) {
+    console.log('this.props.state = ' + JSON.stringify(this.props.state));
+    if (this.props.state.user != undefined) {
       //Test si le media est en favori. Renvoie l'index ou -1
       const favoriteMediaIndex = this.props.state.favoriteMedias.findIndex(
         itemOfFavoriteMedias => itemOfFavoriteMedias._id === item._id,

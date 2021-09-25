@@ -1,7 +1,6 @@
 //configureStore.js
 
-import {createStore, combineReducers} from 'redux';
-import user from './Reducers/userReducer';
+import {createStore} from 'redux';
 import mainReducer from './Reducers/mainReducer';
 /*
 const rootReducer = combineReducers({

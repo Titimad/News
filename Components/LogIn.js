@@ -1,5 +1,5 @@
 //LogIn.js
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,6 +9,7 @@ import {
   SectionList,
   StatusBar,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
 import {connect} from 'react-redux';
 import auth from '@react-native-firebase/auth';
@@ -21,6 +22,7 @@ const mapStateToProps = state => {
 class LogIn extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {user: '', email: '', password: '', initializing: true};
     //const {createUser, logInUser, logOff, closeModalParam} = this.props;
   }
   _createUser() {
@@ -42,25 +44,12 @@ class LogIn extends React.Component {
       });
   }
   _logInUser() {
+    console.log('email = ' + this.state.email);
+    console.log('password = ' + this.state.password);
+    //console.log(testConnect);
     auth()
-      .signInWithEmailAndPassword('titimad64@icloud.com', 'password')
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => {
-        database()
-          .ref('/user/favorites/favoriteMedias')
-          .once('value')
-          .then(snapshot => {
-            console.log(
-              'snapshot.val() après then. = ' + JSON.stringify(snapshot.val()),
-            );
-            const action = {
-              type: 'CONNECT',
-              value: {
-                user: auth().currentUser.email,
-                favoriteMedias: snapshot.val(),
-              },
-            };
-            this.props.dispatch(action);
-          });
         console.log('User account created & signed in!');
       })
       .catch(error => {
@@ -75,15 +64,8 @@ class LogIn extends React.Component {
         console.error(error);
       });
   }
-  _logOff() {
-    auth()
-      .signOut()
-      .then(() => console.log('User signed out!'));
-  }
   render() {
-    const createUser = this.props.createUser;
-    const logInUser = this.props.logInUser;
-    const logOff = this.props.logOff;
+    console.log('LogIn render');
     const closeModalParam = this.props.closeModalParam;
     return (
       <SafeAreaView style={styles.container}>
@@ -92,10 +74,75 @@ class LogIn extends React.Component {
             Close
           </Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Parameters</Text>
-        <Button title="Create account" onPress={() => this._createUser()} />
-        <Button title="Log in" onPress={() => this._logInUser()} />
-        <Button title="Log off" onPress={() => this._logOff()} />
+
+        <Text style={styles.title}>Log In</Text>
+        <View
+          style={{
+            height: 1,
+            width: '100%',
+            backgroundColor: 'lightgrey',
+          }}
+        />
+        <Text>
+          To take full advantage of the application on all your devices, log in.
+        </Text>
+        <View
+          style={{
+            height: 1,
+            width: '100%',
+            backgroundColor: 'lightgrey',
+          }}
+        />
+        <TextInput
+          style={styles.textInput}
+          keyboardType="default"
+          returnKeyType={'done'}
+          placeholder="E-mail"
+          onChangeText={text => this.setState({email: text})}
+          autoCapitalize="none"
+        />
+        <View
+          style={{
+            height: 1,
+            width: '100%',
+            backgroundColor: 'lightgrey',
+          }}
+        />
+        <TextInput
+          style={styles.textInput}
+          keyboardType="default"
+          returnKeyType={'done'}
+          placeholder="Password"
+          onChangeText={text => this.setState({password: text})}
+          autoCapitalize="none"
+        />
+        {/*<Button title="Create account" onPress={() => this._createUser()} />
+        <Button title="Log off" onPress={() => this._logOff()} />*/}
+        <Button
+          title="Log in"
+          onPress={() => {
+            console.log('Dans LogIn, Button onPress: ' + this.state.email);
+            this._logInUser(this.state.email, this.state.password);
+            database()
+              .ref('/user/favorites/favoriteMedias')
+              .once('value')
+              .then(snapshot => {
+                console.log(
+                  'Dans LogIn, snapshot.val() après then. = ' +
+                    JSON.stringify(snapshot.val()),
+                );
+                const action = {
+                  type: 'CONNECT',
+                  value: {
+                    user: this.state.email,
+                    favoriteMedias: snapshot.val(),
+                  },
+                };
+                this.props.dispatch(action);
+              });
+            //  closeModalParam;
+          }}
+        />
       </SafeAreaView>
     );
   }
@@ -130,6 +177,13 @@ const styles = StyleSheet.create({
   titleList: {
     fontSize: 16,
     marginLeft: 10,
+  },
+  textInput: {
+    width: '100%',
+    height: 50,
+    fontSize: 16,
+    backgroundColor: 'white',
+    padding: 10,
   },
 });
 export default connect(mapStateToProps)(LogIn);

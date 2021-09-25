@@ -1,6 +1,7 @@
 //mainReducer.js
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+console.log('Lecture de mainReducer');
 var user;
 if (auth().currentUser != null) {
   user = auth().currentUser.email;
@@ -77,19 +78,28 @@ function mainReducer(state = initialState, action) {
       console.log('nextState = ' + JSON.stringify(nextState));
       return nextState || state;
     case 'DISCONNECT':
-      console.log('mainReducer: DISCONNECT' + action.type);
+      console.log('mainReducer: DISCONNECT');
       nextState = {
         user: null,
         favoriteMedias: [],
       };
       return nextState || state;
     case 'CONNECT':
-      console.log('mainReducer: CONNECT' + action.type);
-      nextState = {
-        user: action.value.user,
-        favoriteMedias: action.value.favoriteMedias,
-      };
-      return nextState || state;
+      console.log('mainReducer: CONNECT');
+      /*
+      database()
+        .ref('/user/favorites/favoriteMedias')
+        .once('value')
+        .then(snapshot => {
+          console.log(
+            'Dans mainReducer/CONNECT,snapshot.val() après then. = ' + JSON.stringify(snapshot.val()),
+          );
+
+        });*/
+      //nextState = {user: 'Coucou', favoriteMedias: []};
+      nextState = action.value;
+      console.log('nextState = ' + JSON.stringify(nextState));
+      return nextState;
     default:
       console.log('mainReducer: default');
       return state;
