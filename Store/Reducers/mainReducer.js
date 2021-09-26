@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 console.log('Lecture de mainReducer');
 var user;
 if (auth().currentUser != null) {
-  user = auth().currentUser.email;
+  user = auth().currentUser.uid;
 } else {
   user = null;
 }
@@ -16,46 +16,80 @@ function mainReducer(state = initialState, action) {
   let nextState;
   switch (action.type) {
     case 'TOGGLE_FAVORITE':
+      console.log('mainReducer, TOGGLE_FAVORITE');
       //  console.log('favoriteReducer exécutée case TOGGLE_FAVORITE');
       //console.log('action.value = ' + action.value);
-
-      const favoriteMediaIndex = state.favoriteMedias.findIndex(
-        item => item._id === action.value._id,
-      );
-      if (favoriteMediaIndex !== -1) {
-        //      console.log('Le média est déjà dans les favoris, on le supprime de la liste',);
-        nextState = {
-          ...state,
-          favoriteMedias: state.favoriteMedias.filter(
-            (item, index) => index !== favoriteMediaIndex,
-          ),
-        };
-        //Mise à jour de la dataBase
-        database()
-          .ref('/user')
-          .set({
-            favorites: nextState,
-          })
-          .then(data => {
-            //success callback
-            console.log('data ', data);
-          })
-          .catch(error => {
-            //error callback
-            console.log('error ', error);
-          });
+      if (action.value.numberOfFavorites != 0) {
+        console.log('Test si présent dans les favoris');
+        const favoriteMediaIndex = state.favoriteMedias.findIndex(
+          item => item._id === action.value.media._id,
+        );
+        if (favoriteMediaIndex !== -1) {
+          console.log(
+            'Le média est déjà dans les favoris, on le supprime de la liste',
+          );
+          nextState = {
+            ...state,
+            favoriteMedias: state.favoriteMedias.filter(
+              (item, index) => index !== favoriteMediaIndex,
+            ),
+          };
+          //Mise à jour de la dataBase
+          database()
+            .ref(action.value.ref)
+            .set({
+              favoriteMedias: nextState.favoriteMedias,
+            })
+            .then(data => {
+              //success callback
+              console.log('data ', data);
+            })
+            .catch(error => {
+              //error callback
+              console.log('error ', error);
+            });
+        } else {
+          console.log(
+            "Le média n'est pas dans les médias favoris, on l'ajoute à la liste",
+          );
+          nextState = {
+            ...state,
+            favoriteMedias: [...state.favoriteMedias, action.value.media],
+          };
+          console.log(
+            'Dans mainReducer, TOGGLE_FAVORITE, nextState = ' +
+              JSON.stringify(nextState),
+          );
+          database()
+            .ref(action.value.ref)
+            .set({
+              favoriteMedias: nextState.favoriteMedias,
+            })
+            .then(data => {
+              //success callback
+              console.log('data ', data);
+            })
+            .catch(error => {
+              //error callback
+              console.log('error ', error);
+            });
+        }
       } else {
         console.log(
           "Le média n'est pas dans les médias favoris, on l'ajoute à la liste",
         );
         nextState = {
           ...state,
-          favoriteMedias: [...state.favoriteMedias, action.value],
+          favoriteMedias: [...state.favoriteMedias, action.value.media],
         };
+        console.log(
+          'Dans mainReducer, TOGGLE_FAVORITE, nextState = ' +
+            JSON.stringify(nextState),
+        );
         database()
-          .ref('/user')
+          .ref(action.value.ref)
           .set({
-            favorites: nextState,
+            favoriteMedias: nextState.favoriteMedias,
           })
           .then(data => {
             //success callback
@@ -71,12 +105,17 @@ function mainReducer(state = initialState, action) {
       console.log('mainReducer, INIT');
       console.log(action.value);
       console.log('state = ' + state.favoriteMedias);
-      nextState = {
-        ...state,
-        favoriteMedias: action.value,
-      };
+      nextState = action.value;
       console.log('nextState = ' + JSON.stringify(nextState));
       return nextState || state;
+    case 'CREATE_ACCOUNT':
+      console.log('mainReducer, CREATE_ACCOUNT');
+      console.log(action.value);
+      console.log('state = ' + state.favoriteMedias);
+      nextState = action.value;
+      console.log('nextState = ' + JSON.stringify(nextState));
+      return nextState || state;
+
     case 'DISCONNECT':
       console.log('mainReducer: DISCONNECT');
       nextState = {
@@ -86,20 +125,9 @@ function mainReducer(state = initialState, action) {
       return nextState || state;
     case 'CONNECT':
       console.log('mainReducer: CONNECT');
-      /*
-      database()
-        .ref('/user/favorites/favoriteMedias')
-        .once('value')
-        .then(snapshot => {
-          console.log(
-            'Dans mainReducer/CONNECT,snapshot.val() après then. = ' + JSON.stringify(snapshot.val()),
-          );
-
-        });*/
-      //nextState = {user: 'Coucou', favoriteMedias: []};
       nextState = action.value;
       console.log('nextState = ' + JSON.stringify(nextState));
-      return nextState;
+      return nextState || state;
     default:
       console.log('mainReducer: default');
       return state;

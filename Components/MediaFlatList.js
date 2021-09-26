@@ -107,16 +107,22 @@ class MediaFlatList extends React.Component {
   _mediaFavorite(item) {
     console.log('this.props.state = ' + JSON.stringify(this.props.state));
     if (this.props.state.user != undefined) {
-      //Test si le media est en favori. Renvoie l'index ou -1
-      const favoriteMediaIndex = this.props.state.favoriteMedias.findIndex(
-        itemOfFavoriteMedias => itemOfFavoriteMedias._id === item._id,
+      const test = this.props.state.favoriteMedias;
+      console.log(
+        'this.props.state.favoriteMedias = ' + this.props.state.favoriteMedias,
       );
-      //  console.log('_mediaFavorite executée');
-      if (favoriteMediaIndex != -1) {
-        return true;
-      } else {
-        //console.log('_mediaFavorite = ' + false);
-        return false;
+      if (this.props.state.favoriteMedias != null) {
+        //Test si le media est en favori. Renvoie l'index ou -1
+        const favoriteMediaIndex = this.props.state.favoriteMedias.findIndex(
+          itemOfFavoriteMedias => itemOfFavoriteMedias._id === item._id,
+        );
+        //  console.log('_mediaFavorite executée');
+        if (favoriteMediaIndex != -1) {
+          return true;
+        } else {
+          //console.log('_mediaFavorite = ' + false);
+          return false;
+        }
       }
     } else {
       return false;

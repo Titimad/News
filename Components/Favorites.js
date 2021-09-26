@@ -40,14 +40,18 @@ class Favorites extends React.Component {
       isLoading: true,
       mediasLoaded: false,
       modalVisible: false,
+      modalType: '',
       initializing: true,
       media: {
         web_url: '',
       },
     };
     if (this.props.state.user != null) {
+      const user = auth().currentUser;
+      console.log('User UID = ' + user.uid);
+      const ref = '/' + user.uid + '/favoriteMedias';
       database()
-        .ref('/user/favorites/favoriteMedias')
+        .ref(ref)
         .once('value')
         .then(snapshot => {
           console.log(
@@ -57,7 +61,7 @@ class Favorites extends React.Component {
           const action = {
             type: 'CONNECT',
             value: {
-              user: auth().currentUser.email,
+              user: user.uid,
               favoriteMedias: snapshot.val(),
             },
           };
@@ -88,10 +92,11 @@ class Favorites extends React.Component {
   _displayMediaDetail = media => {
     this.setState({modalVisible: true, media: media});
   };
-  _openModal() {
-    this.setState({modalVisible: true});
+  _openModal(modalType) {
+    this.setState({modalVisible: true, modalType: modalType});
   }
   _closeModal() {
+    console.log('_closeModalParam de Favorites');
     this.setState({modalVisible: false});
   }
   componentDidMount() {
@@ -164,7 +169,10 @@ class Favorites extends React.Component {
               Alert.alert('Modal has been closed.');
               this.setState({modalVisible: false});
             }}>
-            <LogIn closeModalParam={this._closeModal} />
+            <LogIn
+              closeModalParam={this._closeModal}
+              type={this.state.modalType}
+            />
           </Modal>
           <Text style={{textAlign: 'center', fontSize: 16}}>
             {'\n'}To access your selections{'\n'}you need to be connected to
@@ -176,7 +184,9 @@ class Favorites extends React.Component {
           </Text>
           <TouchableOpacity
             style={styles.createAccountButton}
-            onPress={() => {}}>
+            onPress={() => {
+              this._openModal('Create an account');
+            }}>
             <Text
               style={{
                 textAlign: 'center',
@@ -200,7 +210,7 @@ class Favorites extends React.Component {
               fontWeight: 'bold',
             }}
             onPress={() => {
-              this._openModal();
+              this._openModal('Log In');
             }}>
             Log In
           </Text>

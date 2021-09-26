@@ -110,6 +110,7 @@ class ParametersDetail extends React.Component {
     this.setState({modalVisible: true});
   }
   _closeModalParam() {
+    console.log('_closeModalParam de ParametersDetail');
     this.setState({modalVisible: false});
   }
   _logOff() {

@@ -60,7 +60,7 @@ function IconUser() {
       'Dans App/function onAuthStateChanged, subscriber = ' + subscriber,
     );
     return subscriber; // unsubscribe on unmount
-    console.log('User: ' + user.email);
+    console.log('Dans App, User: ' + user.email);
   }, []);
   if (initializing) {
     console.log('initializing : return null');

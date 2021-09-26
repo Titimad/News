@@ -72,8 +72,22 @@ class MediaItem extends React.Component {
   _toggleFavorite(media) {
     //Action à faire si boutton Favoris appuyé
     //    console.log('_toggleFavorite exécutée');
-    //    console.log('_toggleFavorite props = ' + this.props);
-    const action = {type: 'TOGGLE_FAVORITE', value: media};
+    console.log('_toggleFavorite props = ' + JSON.stringify(this.props));
+    let numberOfFavorites;
+    if (this.props.state.favoriteMedias == null) {
+      numberOfFavorites = 0;
+    } else {
+      numberOfFavorites = this.props.state.favoriteMedias.length;
+    }
+    console.log('numberOfFavorites = ' + numberOfFavorites);
+    const user = auth().currentUser;
+    console.log('User UID = ' + user.uid);
+    const ref = '/' + user.uid;
+    console.log('Dans MediaItem, _toggleFavorite, ref = ' + ref);
+    const action = {
+      type: 'TOGGLE_FAVORITE',
+      value: {media: media, numberOfFavorites: numberOfFavorites, ref: ref},
+    };
     //    console.log('Dans _toggleFavorite, media = ' + media._id);
     this.props.dispatch(action);
     //    console.log('action TOGGLE_FAVORITE appelée');
