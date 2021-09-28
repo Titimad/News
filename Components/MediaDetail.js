@@ -40,7 +40,8 @@ class MediaDetail extends React.Component {
   }
   render() {
     const web_url = this.props.web_url;
-    const closeModal = this.props.closeModal;
+    const closeModalMediaDetail = this.props.closeModalMediaDetail;
+    const iconFavorite = this.props.iconFavorite;
     return (
       <SafeAreaView style={{backgroundColor: 'white'}}>
         <WebView
@@ -53,7 +54,7 @@ class MediaDetail extends React.Component {
         />
         <View style={styles.limitTabBarMenu} />
         <View style={styles.tabBarMenu}>
-          <TouchableOpacity onPress={closeModal}>
+          <TouchableOpacity onPress={closeModalMediaDetail}>
             <Text style={styles.crossTabBarMenu}>X</Text>
           </TouchableOpacity>
           <Octicons
@@ -62,12 +63,7 @@ class MediaDetail extends React.Component {
             size={24}
             onPress={() => this._toggleFavorite()}
           />
-          <Ionicons
-            name="bookmark-outline"
-            color="black"
-            size={24}
-            onPress={() => this._toggleFavorite()}
-          />
+          {iconFavorite}
           <Ionicons
             name="share-outline"
             color="black"

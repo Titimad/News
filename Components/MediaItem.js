@@ -99,11 +99,12 @@ class MediaItem extends React.Component {
   render() {
     //  console.log('MediaItem props = ' + this.props);
     const {media, displayMediaDetail, mediaFavorite} = this.props;
+    const iconFavorite = this._iconFavorite(mediaFavorite, media);
     //  console.log('MediaItem props = ' + this.props);
     return (
       <TouchableOpacity
         style={styles.item}
-        onPress={() => displayMediaDetail(media)}>
+        onPress={() => displayMediaDetail(media, iconFavorite)}>
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 2, justifyContent: 'space-between'}}>
             <Text style={styles.title}>{media.headline.main}</Text>

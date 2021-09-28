@@ -145,6 +145,32 @@ class LogIn extends React.Component {
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => {
         console.log('User account created & signed in!');
+        const user = auth().currentUser;
+        console.log('User UID = ' + user.uid);
+        const ref = '/' + user.uid + '/favoriteMedias';
+        console.log('Dans LogIn, ref = ' + ref);
+        database()
+          .ref(ref)
+          .once('value')
+          .then(snapshot => {
+            console.log(
+              'Dans LogIn, snapshot.val() après then. = ' +
+                JSON.stringify(snapshot.val()),
+            );
+            const action = {
+              type: 'CONNECT',
+              value: {
+                user: this.state.email,
+                favoriteMedias: snapshot.val(),
+              },
+            };
+            this.props.dispatch(action);
+            console.log(
+              'Dans LogIn, à la fin de onPress de Log In, closeModalParam = ' +
+                closeModalLogIn,
+            );
+            closeModalLogIn;
+          });
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
@@ -160,12 +186,12 @@ class LogIn extends React.Component {
   }
   render() {
     console.log('LogIn render');
-    const closeModalParam = this.props.closeModalParam;
+    const closeModalLogIn = this.props.closeModalLogIn;
     const modalType = this.props.type;
     console.log('Dans LogIn, modalType = ' + modalType);
     return (
       <SafeAreaView style={styles.container}>
-        <TouchableOpacity title="Close" onPress={closeModalParam}>
+        <TouchableOpacity title="Close" onPress={closeModalLogIn}>
           <Text style={{color: '#007AFF', fontSize: 20, padding: 20}}>
             Close
           </Text>
@@ -218,39 +244,15 @@ class LogIn extends React.Component {
         <Button title="Log off" onPress={() => this._logOff()} />*/}
         <TouchableOpacity
           style={styles.createAccountButton}
-          onPress={closeModalParam => {
-            closeModalParam;
+          onPress={closeModalLogIn => {
+            closeModalLogIn;
             console.log('Dans LogIn, Button onPress: ' + this.state.email);
             console.log(
               'Dans LogIn, au début de onPress de Log In, closeModalParam = ' +
-                closeModalParam,
+                closeModalLogIn,
             );
-            if (modalType == 'Log In') {
+            if (modalType == 'Sign in') {
               this._logInUser(this.state.email, this.state.password);
-              const ref = '/' + 'titimad' + '/favorites/favoriteMedias';
-              console.log('Dans LogIn, ref = ' + ref);
-              database()
-                .ref(ref)
-                .once('value')
-                .then(snapshot => {
-                  console.log(
-                    'Dans LogIn, snapshot.val() après then. = ' +
-                      JSON.stringify(snapshot.val()),
-                  );
-                  const action = {
-                    type: 'CONNECT',
-                    value: {
-                      user: this.state.email,
-                      favoriteMedias: snapshot.val(),
-                    },
-                  };
-                  this.props.dispatch(action);
-                  console.log(
-                    'Dans LogIn, à la fin de onPress de Log In, closeModalParam = ' +
-                      closeModalParam,
-                  );
-                  closeModalParam;
-                });
             } else if (modalType == 'Create an account') {
               this._createUser(this.state.email, this.state.password);
               //  const user = auth().currentUser;

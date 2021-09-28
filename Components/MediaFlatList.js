@@ -36,13 +36,14 @@ class MediaFlatList extends React.Component {
       'Dans MediaFlatList, constructor, this.props.state = ' +
         JSON.stringify(this.props.state),
     );
-    this._closeModal = this._closeModal.bind(this);
+    this._closeModalMediaDetail = this._closeModalMediaDetail.bind(this);
     this.state = {
       medias: undefined,
       favoriteMedias: null,
       isLoading: true,
       mediasLoaded: false,
-      modalVisible: false,
+      modalMediaDetailVisible: false,
+      iconFavorite: null,
       media: {
         web_url: '',
       },
@@ -89,8 +90,12 @@ class MediaFlatList extends React.Component {
     });
   }
 
-  _displayMediaDetail = media => {
-    this.setState({modalVisible: true, media: media});
+  _displayMediaDetail = (media, iconFavorite) => {
+    this.setState({
+      modalMediaDetailVisible: true,
+      media: media,
+      iconFavorite: iconFavorite,
+    });
   };
 
   _firstMediaItemChoice() {
@@ -128,8 +133,8 @@ class MediaFlatList extends React.Component {
       return false;
     }
   }
-  _closeModal() {
-    this.setState({modalVisible: false});
+  _closeModalMediaDetail() {
+    this.setState({modalMediaDetailVisible: false});
   }
   _lectureDataBase() {
     console.log('function lectureDataBase read');
@@ -158,20 +163,20 @@ class MediaFlatList extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <GestureRecognizer
-          onSwipeUp={() => this.setState({modalVisible: false})}
-          onSwipeDown={() => this.setState({modalVisible: false})}>
+          onSwipeDown={() => this.setState({modalMediaDetailVisible: false})}>
           <Modal
             style={styles.modalView}
             animationType="slide"
             transparent={false}
-            visible={this.state.modalVisible}
+            visible={this.state.modalMediaDetailVisible}
             onRequestClose={() => {
               Alert.alert('Modal has been closed.');
-              this.setState({modalVisible: false});
+              this.setState({modalMediaDetailVisible: false});
             }}>
             <MediaDetail
               web_url={this.state.media.web_url}
-              closeModal={this._closeModal}
+              closeModalMediaDetail={this._closeModalMediaDetail}
+              iconFavorite={this.state.iconFavorite}
             />
           </Modal>
         </GestureRecognizer>

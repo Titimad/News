@@ -59,8 +59,20 @@ const DisconnectionButton = ({user, logOff}) => {
     return <View></View>;
   }
 };
-const Item = ({title, openModalParam, user}) => (
-  <TouchableOpacity onPress={() => openModalParam()}>
+const Item = ({title, openModalLogIn, user}) => (
+  <TouchableOpacity
+    onPress={() => {
+      const modalType = SousTitre(title, user);
+      console.log('Dans ParametersDetail, dans Item, modalType = ' + modalType);
+      switch (modalType) {
+        case 'Sign in':
+          openModalLogIn('Sign in');
+          break;
+        case 'Create an account':
+          openModalLogIn('Create an account');
+        default:
+      }
+    }}>
     <View style={styles.item}>
       <Text style={styles.titleList}>{SousTitre(title, user)}</Text>
       <Text style={{color: 'grey', fontSize: 20, fontWeight: 'bold'}}>
@@ -82,7 +94,7 @@ function SousTitre(title, user) {
       if (user != null) {
         return 'Change password';
       } else {
-        return 'Create account';
+        return 'Create an account';
       }
     }
     return title;
@@ -91,8 +103,12 @@ function SousTitre(title, user) {
 class ParametersDetail extends React.Component {
   constructor(props) {
     super(props);
-    this._closeModalParam = this._closeModalParam.bind(this);
-    this.state = {modalVisible: false, user: auth().currentUser};
+    this._closeModalLogIn = this._closeModalLogIn.bind(this);
+    this.state = {
+      modalVisibleLogIn: false,
+      user: auth().currentUser,
+      modalType: '',
+    };
     //const {createUser, logInUser, logOff, closeModalParam} = this.props;
   }
   _sectionListItemSeparator() {
@@ -106,12 +122,22 @@ class ParametersDetail extends React.Component {
       />
     );
   }
-  _openModalParam() {
-    this.setState({modalVisible: true});
+  _openModalLogIn(modalType) {
+    console.log(
+      'Dans ParametersDetail, _openModalParam, modalType = ' + modalType,
+    );
+    this.setState({modalVisibleLogIn: true, modalType: modalType});
   }
-  _closeModalParam() {
+  _closeModalLogIn() {
     console.log('_closeModalParam de ParametersDetail');
-    this.setState({modalVisible: false});
+    this.setState({modalVisibleLogIn: false});
+  }
+  _modalType(user) {
+    if (user != null) {
+      return 'Log In';
+    } else {
+      return 'Create an account';
+    }
   }
   _logOff() {
     console.log('Dans _logOff, user = ' + this.props.state.user);
@@ -138,12 +164,15 @@ class ParametersDetail extends React.Component {
           animationOut="slideOutRight"
           swipeDirection={['right']}
           transparent={false}
-          visible={this.state.modalVisible}
+          visible={this.state.modalVisibleLogIn}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
-            this.setState({modalVisible: false});
+            this.setState({modalVisibleLogIn: false});
           }}>
-          <LogIn closeModalParam={this._closeModalParam} />
+          <LogIn
+            closeModalLogIn={this._closeModalLogIn}
+            type={this.state.modalType}
+          />
         </Modal>
         <TouchableOpacity title="Close" onPress={closeModalParam}>
           <Text style={{color: '#007AFF', fontSize: 20, padding: 20}}>
@@ -157,7 +186,7 @@ class ParametersDetail extends React.Component {
           renderItem={({item}) => (
             <Item
               title={item}
-              openModalParam={() => this._openModalParam()}
+              openModalLogIn={modalType1 => this._openModalLogIn(modalType1)}
               user={user}
             />
           )}

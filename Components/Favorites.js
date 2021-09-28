@@ -35,11 +35,13 @@ const mapStateToProps = state => {
 class Favorites extends React.Component {
   constructor(props) {
     super(props);
-    this._closeModal = this._closeModal.bind(this);
+    this._closeModalLogIn = this._closeModalLogIn.bind(this);
+    this._closeModalMediaDetail = this._closeModalMediaDetail.bind(this);
     this.state = {
       isLoading: true,
       mediasLoaded: false,
-      modalVisible: false,
+      modalVisibleLogIn: false,
+      modalMediaDetailVisible: false,
       modalType: '',
       initializing: true,
       media: {
@@ -90,14 +92,18 @@ class Favorites extends React.Component {
     );
   }
   _displayMediaDetail = media => {
-    this.setState({modalVisible: true, media: media});
+    this.setState({modalMediaDetailVisible: true, media: media});
   };
-  _openModal(modalType) {
-    this.setState({modalVisible: true, modalType: modalType});
+  _openModalLogIn(modalType) {
+    this.setState({modalVisibleLogIn: true, modalType: modalType});
   }
-  _closeModal() {
+  _closeModalLogIn() {
     console.log('_closeModalParam de Favorites');
-    this.setState({modalVisible: false});
+    this.setState({modalVisibleLogIn: false});
+  }
+  _closeModalMediaDetail() {
+    console.log('_closeModalConnected de Favorites');
+    this.setState({modalMediaDetailVisible: false});
   }
   componentDidMount() {
     this.setState({
@@ -115,20 +121,20 @@ class Favorites extends React.Component {
       return (
         <SafeAreaView style={styles.container}>
           <GestureRecognizer
-            onSwipeUp={() => this.setState({modalVisible: false})}
-            onSwipeDown={() => this.setState({modalVisible: false})}>
+            onSwipeUp={() => this.setState({modalMediaDetailVisible: false})}
+            onSwipeDown={() => this.setState({modalMediaDetailVisible: false})}>
             <Modal
               style={styles.modalView}
               animationType="slide"
               transparent={false}
-              visible={this.state.modalVisible}
+              visible={this.state.modalMediaDetailVisible}
               onRequestClose={() => {
                 Alert.alert('Modal has been closed.');
-                this.setState({modalVisible: false});
+                this.setState({modalMediaDetailVisible: false});
               }}>
               <MediaDetail
                 web_url={this.state.media.web_url}
-                closeModal={this._closeModal}
+                closeModalMediaDetail={this._closeModalMediaDetail}
               />
             </Modal>
           </GestureRecognizer>
@@ -164,13 +170,13 @@ class Favorites extends React.Component {
             animationOut="slideOutRight"
             swipeDirection={['right']}
             transparent={false}
-            visible={this.state.modalVisible}
+            visible={this.state.modalVisibleLogIn}
             onRequestClose={() => {
               Alert.alert('Modal has been closed.');
-              this.setState({modalVisible: false});
+              this.setState({modalVisibleLogIn: false});
             }}>
             <LogIn
-              closeModalParam={this._closeModal}
+              closeModalLogIn={this._closeModalLogIn}
               type={this.state.modalType}
             />
           </Modal>
@@ -185,7 +191,7 @@ class Favorites extends React.Component {
           <TouchableOpacity
             style={styles.createAccountButton}
             onPress={() => {
-              this._openModal('Create an account');
+              this._openModalLogIn('Create an account');
             }}>
             <Text
               style={{
@@ -210,9 +216,9 @@ class Favorites extends React.Component {
               fontWeight: 'bold',
             }}
             onPress={() => {
-              this._openModal('Log In');
+              this._openModalLogIn('Sign in');
             }}>
-            Log In
+            Sign in
           </Text>
         </SafeAreaView>
       );
