@@ -98,7 +98,7 @@ class LogIn extends React.Component {
     this.state = {user: '', email: '', password: '', initializing: true};
     //const {createUser, logInUser, logOff, closeModalParam} = this.props;
   }
-  _createUser() {
+  _createUser(closeModalLogIn) {
     auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => {
@@ -123,6 +123,7 @@ class LogIn extends React.Component {
             };
             this.props.dispatch(action);
             //    return user;
+            closeModalLogIn;
           });
       })
       .catch(error => {
@@ -166,7 +167,7 @@ class LogIn extends React.Component {
             };
             this.props.dispatch(action);
             console.log(
-              'Dans LogIn, à la fin de onPress de Log In, closeModalParam = ' +
+              'Dans LogIn, à la fin de onPress de Log In, closeModalLogIn = ' +
                 closeModalLogIn,
             );
             closeModalLogIn;
@@ -252,9 +253,11 @@ class LogIn extends React.Component {
                 closeModalLogIn,
             );
             if (modalType == 'Sign in') {
-              this._logInUser(this.state.email, this.state.password);
+              console.log('Dans LogIn, modalType = Sign In.');
+              this._logInUser();
             } else if (modalType == 'Create an account') {
-              this._createUser(this.state.email, this.state.password);
+              console.log('Dans LogIn, modalType = Create an account.');
+              this._createUser(closeModalLogIn);
               //  const user = auth().currentUser;
             }
           }}>
